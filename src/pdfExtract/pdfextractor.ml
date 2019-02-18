@@ -379,11 +379,12 @@ let rec makeEncoding  differences widths chars =
     @effects: None.
     @output:  A pair list of strings associating a number to a character name.
  *)
-let getDup str = 
-    match (SPLIT "dup") str with
+let getDup str = []
+(**
+   match (SPLIT "dup") str with
       | [] -> []
       | _::dups -> List.flatten (List.map (function | RE blank* (digit+ as num) blank* ("/"alpha* as name) _* -> [num;name]) dups);;
-
+**)
 
 
 (** 

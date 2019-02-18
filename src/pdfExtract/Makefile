@@ -55,7 +55,7 @@ TARGETS= extractElements.ml\
 
 # All Packages needed for making sources and targets
 
-PACKAGES=json-wheel mikmatch_pcre\
+PACKAGES=json-wheel\ #mikmatch_pcre\
 
 # A flag specifying if documentation is in short or long format
 SHORTDOC=false
@@ -85,6 +85,8 @@ OCAMLFOPT=$(OCAMLFIND) $(OCAMLOPT)
 ## Assigning Special Directories
 
 SRCDIR=./
+
+OCAML_DIR=/home/hgarg/.opam/system
 LIBDIR=$(OCAML_DIR)/lib
 DOCDIR=$(OCAML_DIR)/doc
 BINDIR=$(OCAML_DIR)/bin
@@ -137,7 +139,7 @@ DOCINCLUDES=$(addprefix -I , $(DOCINCLUDEDIRS))
 
 ## Flags
 # PREPROCESS=-pp 'camlp4o -I . $(addsuffix .cmo,$(basename $(EXTENSIONS)))' # Preprocessing not used
-PREPROCESS=-syntax camlp4o
+PREPROCESS=#-syntax camlp4o
 
 comma:= ,
 empty:=
