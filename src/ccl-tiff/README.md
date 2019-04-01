@@ -6,7 +6,7 @@ Simple connected component labelling for multi-page TIFF images.
 - Equivalence resolution techinque can be found [here][2]
 - This is an experimental version
 - VERY FAST!
-- REQUIRES libtiff
+- REQUIRES libtiff5-dev (apt-get install libtiff5-dev)
 - The code is by no means optimised and needs some clean up 
 - It uses 8 connectivity
 
