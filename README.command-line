@@ -1,0 +1,21 @@
+./anderson_post --driver pdf --type DOC --layout latex -o testme1.tex test
+for annotations
+
+
+./anderson_post --driver latex2 --type DOC --layout pdf_both -o testme2.tex test
+for layers
+
+
+
+./anderson_post --driver latex_med --type DOC --layout latex -o testme1.tex test2
+for latex_medium
+
+./anderson_post --driver latex_med --type DOC --layout tralics -v -e lin -auto --trconf /project/tralics/confdir --trbin /usr/bin/tralics -o ~/tmp/Eudml-test/243/243.xml ~/tmp/Eudml-test/243/
+
+./anderson_post --driver latex_med --type DOC --layout tralics -v -e lin -auto --trconf /bham/ums/linux/pd/packages/tralics/confdir/ --trbin /bham/ums/linux/pd/bin/tralics -o ~/tmp/Eudml-test/243/243.xml ~/tmp/Eudml-test/243/
+
+
+## Aria
+./anderson_post.opt --driver latex_med --type DOC --layout aria --trconf /opt/tralics/confdir/ --trbin /usr/local/bin/tralics --traria /home/sorge/svn/vxs/ocr/pdf-reader/src/ocaml/anderson-parser/transform.py -e txt4 -auto -o test-t4h.xml test/
+
+~/anderson/anderson_post --driver latex_med --type DOC --layout latex -o ex1-old.tex --adv pagenumber,font_split ex1
