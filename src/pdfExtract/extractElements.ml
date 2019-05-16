@@ -14,25 +14,20 @@ let jsondir = ref ""
 (** 
     @edited:  22-FEB-2012
     @author:  Josef Baker
-    @input:   input PDF file
-    @effects: creates random temp directory in /tmp with PDF, uncompressed if
-    not already also sets name as file prefix
-    @output:  dir name of new file
+    @input:   input PDF file and directory in which to decompress it, if requested
+    @effects: creates specified directory, and copies (uncompressed) PDF there
+    @output:  name of directory created or jsondir if that is specified by user
  *)
 let prepFile file directory=
-  name := Filename.basename file;
-
-  if (Filename.check_suffix (!name) ".pdf")
-  then  name := Filename.chop_extension (!name);
-  
+  name :=  Filename.basename file;
+  name :=  Filename.chop_extension (!name);
   if (!jsondir) ="" then (
     system ("mkdir "^directory); 
     let dir = directory in
       if (!uncomp = false)then( 
-(*	print_string ("pdftk "^(!pdf)^" output "^dir^"/"^(!name)^".pdf uncompress");*)
 	system ("pdftk "^(!pdf)^" output "^dir^"/"^(!name)^".pdf uncompress"))
       else(
-	system ("cp "^(!pdf)^" "^dir^"/"^(!name)^".pdf"));
+	system ("cp "^(!pdf)^" "^dir^"/"));
       (dir^"/")
   )
   else (!jsondir)
@@ -62,7 +57,6 @@ let stringInt i =
 let rec makeJson dir count =
   if count < 0 then ()
   else (let subdir = (dir^(stringInt count)) in
-(*	  system ("./connectedcomp_ci.opt-STATIC -d "^(stringInt count)^" "^dir^(!name)^".tif");*)
 	  system ("./ccl "^dir^(!name)^".tif "^(string_of_int count));
 	  system ("mkdir "^subdir);
 	  system ("mv "^dir^"*.json "^subdir);
@@ -87,18 +81,6 @@ let rec matchLines lines chars matchedLines =
 List.rev matchedLines)
 ;;
 
-(*
-let rec matchLines lines chars matchedLines =
-  match lines with
-     h::t -> (let matched = Match.matcher chars h in
-		if matched = [] then matchLines t chars matchedLines
-		else  matchLines t (Match.removeDupChars chars matched [])
-		   ((Match.convert matched [])::matchedLines))
-    | _ -> ((*Match.printChars chars;*)
-
-List.rev matchedLines)
-;;
-*)
 
 (** 
     @edited:  06-MAR-2011
@@ -158,30 +140,9 @@ let rec extractPages dir count pageList elementList=
 	     let clip = LoadClip.getClip jsondir in
 	     let aligned = Align.alignElems clip pageHd elemHd in
 	     let glyphs = Align.convertGlyphs clip.LoadClip.glyphs [] in
-	       (*   let matched = Matcher.makeSymbols glyphs aligned in
-		    ()
-	       *)
 	     let lines = LineFinder.findLines glyphs in
-	       (*  print_string "*";	
-		   print_int (List.length lines);
-		   print_string "*";
-		   print_newline ();*)
 	     let matched = matchLines lines aligned [] in
 	       
-	       (*print_string "$$";
-		 print_int  (List.length matched);
-		 print_string "$$";
-		 print_newline ();*)
-	       (*		
-				
-				print_string (jsondir);
-				print_newline ();
-				print_string (String.sub pageHd.Pdfextractor.contents 0 200);
-				print_newline ();
-				Contentparser.printElems ((List.hd  elemHd)::[]);
-				print_newline ();
-				print_newline ();
-	       *)
 	       
  	       saveClips clip matched 0 (dir^(stringInt count)^"/");
 	       
@@ -191,58 +152,6 @@ let rec extractPages dir count pageList elementList=
     | _,_ -> () 
 ;;
 
-
-(* This is the version with special line extraction algorithms. *)
-  
-(* let extractFile inFile inDirectory= *)
-  
-(*   let dir = ref "" in *)
-(*   let file = ref "" in *)
-    
-(*  (\*   try( *\) *)
-      
-(*       (\*print_string inDirectory; *)
-(* 	print_newline ();*\) *)
-(*       dir := prepFile inFile inDirectory; *)
-(*       file := (!dir)^(!name)^".pdf"; *)
-(*       (\* *)
-(* 	print_string ((!dir)^" "^(!file)); *)
-(* 	print_newline (); *)
-(*       *\) *)
-    
-(*       let inCh = open_in_bin (!file) in *)
-(*       let pageTree = Pdfextractor.getPageTree inCh !test in	   *)
-(*       let pageList = Pdfextractor.extractPDF inCh pageTree [] in *)
-(* (\*	print_string "!";*\) *)
-(* 	close_in inCh; *)
-(* 	let elements = Contentparser.parse pageList [] !test in *)
-	  
-(* 	  if (List.length (List.flatten elements)) >50 *)
-(* 	  then( *)
-	    
-(* 	    if (!jsondir) = "" then(	     *)
-(* (\* pre mo	      system ("./pdf2tiff "^(!file)); *)
-(* 	      makeJson !dir ((List.length pageTree)-1);); *)
-(* *\) *)
-(* 	      system ("./extractLines.opt -f "^(!file)^" -o "^(!dir)); *)
-(* (); *)
-(* ); *)
-	    
-(* 	    (\*      print_int (List.length pageTree);*\) *)
-	    
-(* 	    (\*print_string ("elems: "^(string_of_int (List.length pageList))^" pages "^(string_of_int (List.length elements))^"\n"); *)
-(* 	    *\) *)
-	    
-(* 	    matchPages !dir 0 (List.rev pageList) elements; *)
-	    
-(* 	    ()) *)
-(* 	  else () *)
-(*   (\*  ) *)
-(*     with error -> (print_endline "0";(\*system ("rm -fR "^(!dir));*\) ();) *)
-(*   *\)   *)
-(* ;; *)
-
-
 let extractFile inFile inDirectory=
   
   let dir = ref "" in
@@ -250,14 +159,8 @@ let extractFile inFile inDirectory=
     
     try(
       
-      (*print_string inDirectory;
-	print_newline ();*)
       dir := prepFile inFile inDirectory;
       file := (!dir)^(!name)^".pdf";
-      (*
-	print_string ((!dir)^" "^(!file));
-	print_newline ();
-      *)
     
       let inCh = open_in_bin (!file) in
 	
@@ -276,11 +179,6 @@ let extractFile inFile inDirectory=
 		system ("./pdf2tiff "^(!file));
 		makeJson !dir ((List.length pageTree)-1););
 	  
-	  (*      print_int (List.length pageTree);*)
-	  
-	  (*print_string ("elems: "^(string_of_int (List.length pageList))^" pages "^(string_of_int (List.length elements))^"\n");
-	  *)
-
 	  extractPages !dir 0 (List.rev pageList) elements;
 	  
 	  ();
@@ -291,14 +189,6 @@ let extractFile inFile inDirectory=
 
 
 let extractElements () =
-
-  (* let pdf = ref "" in *)
-  (* let name = ref "" in *)
-  (* let test = ref false in *)
-  (* let uncomp = ref false in *)
-  (* let print = ref false in *)
-  (* let directory = ref "" in *)
-  (* let jsondir = ref "" in *)
 
   let usage = "usage: " ^ Sys.argv.(0) ^ " [-f file] [-t] [-u] [-p] [-d dir] [-j dir]" in
   let speclist = [
