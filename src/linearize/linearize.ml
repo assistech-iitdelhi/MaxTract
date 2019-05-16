@@ -3,8 +3,6 @@ open Synt;;
 let bbstring   = ref ""
 let verbose = ref false
 
-
-
 (** 
     @edited:  20-JUL-2012
     @author:  Josef Baker
@@ -77,18 +75,7 @@ let rec getRootBody t synts body =
     @input:   tree, List of synts
     @effects: 
     @output:  all synts subing t,
- *)(*
-let rec getSub t synts sub =
-  match t,synts with
-    | Null,_ -> []
-    | ITree iTree,hd::tl when ((hd.y1 > iTree.ttop) 
-			       && (hd.y2 > iTree.tbase)
-			       && (hd.y3 >= iTree.tbot)
-			       && (hd.x1 < ((getRight t sub iTree.tright) + 20) ))
-	-> getSub t tl (hd::sub)
-    | _,hd::tl -> (*getSub t tl*) sub    
-    | _,[]   -> sub
-	*)
+ *)
 let rec getSub t synts sub =
   match t,synts with
     | Null,_ -> []
@@ -106,18 +93,7 @@ let rec getSub t synts sub =
     @input:   tree, List of synts
     @effects: 
     @output:  all synts supering t,
- *)(*
-let rec getSuper t synts super =
-  match t,synts with
-    | Null,_ -> []
-    | ITree iTree,hd::tl when ((hd.y3 < iTree.tbot) 
-			       && ((hd.y2 < iTree.tbase)||(hd.y2 < ((iTree.ttop+iTree.tbot))/2))
-			       && (hd.y1 <= iTree.ttop)
-			       && (hd.x1 < ((getRight t super iTree.tright) + 20) ))
-	-> getSuper t tl (hd::super)
-    | _,hd::tl -> (*getSuper t tl*) super    
-    | _,[]   -> super
-	*)
+ *)
 let rec getSuper t synts super =
   match t,synts with
     | Null,_ -> []
@@ -159,8 +135,6 @@ let rec getSupSub t synts super sub =
     | _,hd::tl -> (*getSuper t tl*) (super,sub)    
     | _,[]   -> (super,sub)
 ;;
-
-
 
 (** 
     @edited:  20-JUL-2012
@@ -363,12 +337,6 @@ let hasBottomLimit t synts =
     @output:  true if t is a bottom limit of hd
  *)
 let isBottomLimit t synts =  
-(*  match t,synts with
-    | ITree iTree, hd::tl when (hd.y3 < iTree.ttop) &&
-	(hd.y3-hd.y1) > (iTree.tbot-iTree.ttop) &&
-	(iTree.tleft < hd.x3)-> true 
-    | _,_ -> false	
-*)
 let lines = getLines (getRecursiveXOverlap t synts []) in 
    match t,lines with
       | ITree iTree, ln1::[]  (*Tree top ln1 base*)
@@ -402,12 +370,6 @@ let hasTopLimit t synts =
     @output:  true if t is a top limit of hd
  *)
 let isTopLimit t synts =  
- (* match t,synts with
-    | ITree iTree, hd::tl when (hd.y1 > iTree.tbot) &&
-	(hd.y3-hd.y1) > (iTree.tbot-iTree.ttop) &&
-	(iTree.tleft < hd.x3)-> true 
-    | _,_ -> false	
- *)
 
 let lines = getLines (getRecursiveXOverlap t synts []) in 
    match t,lines with
@@ -498,7 +460,6 @@ let printRule name synts tstring =
  ;;
  
 let rec linearise t synts tstring linearised= 
-
 
   match t,synts with
       (*Nothing left to process*)
@@ -802,7 +763,6 @@ let rec linearise t synts tstring linearised=
 ;;
 
 let lineariseLine synts bbChan=
- (* Util.printSyntList (sortSynt synts);*)
   match synts with
       h::t -> (
 	let x = string_of_int (getLeft Null synts h.x1) in
@@ -817,5 +777,3 @@ let lineariseLine synts bbChan=
     |  _ ->  ""
 
 ;;
-(*linearize (ITree {tleft=1; tright=1; ttop=1; tbot=1; tbase=1;
-tstring="Q"})*)

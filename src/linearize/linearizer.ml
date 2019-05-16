@@ -93,8 +93,6 @@ let linearizer () =
     (fun f -> rest := true; 
        try linearizeFile f with
 error ->())
-(*	 | Failure(s) -> print_endline ("Error `Failure("^s^")' in file "^f) 
-	 | _ -> print_endline ("Error in "^f)) *)
     usage;
   
   match !indir,!infile with
@@ -102,7 +100,7 @@ error ->())
     | "",""            -> print_string "Either input directory or input file must be specified\n"; exit(0)
     | "",file          -> linearizeFile file
     | dir,""           -> (linearizeDirs !indir 0;
-(*Testing to see if anything has been prodeuces, and if more than 3 lines per page are being extracted*)
+(*Testing to see if anything has been prodeuced, and if more than 3 lines per page are being extracted*)
 			   if (!lines>0)&& (!pages>0)&&((!lines) / (!pages) >3) then ( 
 			     let logFile = ((!indir)^"/lin.log") in
 			     let outCh = open_out logFile in
@@ -111,57 +109,5 @@ error ->())
 	
     | _,_              -> print_string "Specify either an input directory or an
   input file only\n"; exit(0)
-  (*
-let linearizer () =
-if (Preprocessor.isAlpha "p s e u d o hyphen w") then print_endline "true" else print_endline "false";
-if (Preprocessor.isAlpha "ffl comma a b period") then print_endline "true" else print_endline "false";
-if (Preprocessor.isAlpha "aif12333") then print_endline "true" else print_endline "false";
-if (Preprocessor.isAlpha "acaron hyphen b") then print_endline "true" else print_endline "false";
-if (Preprocessor.isAlpha "caron") then print_endline "true" else print_endline "false";
-if (Preprocessor.isAlpha "comma") then print_endline "true" else print_endline "false";
-if (Preprocessor.isAlpha "commacaron") then print_endline "true" else print_endline "false";
-if (Preprocessor.isAlpha "A") then print_endline "true" else print_endline "false";
-if (Preprocessor.isNum "one 1") then print_endline "true" else print_endline "false";
-if (Preprocessor.isNum "one two") then print_endline "true" else print_endline "false";
-if (Preprocessor.isNum "1 1") then print_endline "true" else print_endline "false";
-;;	
-  *)	
 let _ = linearizer ()
 ;;  
-(*
-  
-  let rec main ofile count =
-  
-  let file = ofile^(fileInt count) in
-  
-  try (
-  
-  let symbols = JsonfIO.getSymbols file in
-  
-  let synts =  Preprocessor.preprocess symbols  in
-  
-  let outBB = ((String.sub file 0 ((String.length file)-5))^"bb") in
-  
-  let outBBCh = open_out outBB in
-  
-  let outStr = ((Linearize.lin outBBCh synts)^"\n") in
-  close_out outBBCh;
-  
-  let outFile = ((String.sub file 0 ((String.length file)-5))^"txt4") in
-  let outCh = open_out outFile in
-  output_string outCh outStr;
-  close_out outCh;
-(*      print_newline ();
-  print_string outStr;
-  print_newline ();*)
-  main ofile (count+1);
-  )
-  with
-  Sys_error e -> ()     
-  ;;
-
-
-
-main Sys.argv.(1) 0
-  
-*)

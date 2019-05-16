@@ -17,7 +17,6 @@ let size = ref 0.0
 let rise = ref 0.0
 
 
-
 type matrix = {a:float;b:float;c:float;d:float;e:float;f:float}
 
 let textMatrix = ref {a=1.0;b=0.0;c=0.0;d=1.0;e=0.0;f=0.0}
@@ -114,8 +113,6 @@ let makeChar fonts code space=
     let cm = !ctMatrix in
     let x = (tm.e +. cm.e) *. cm.a (* *. tm.a*) in
     let y = (tm.f +. cm.f) *. cm.d *. tm.d in
-    (* let x = 0.8 in *)
-    (* let y = 0.8 in *)
       
     let w0 = (List.nth (getFont fonts !font) code).Pdfextractor.cwidth in
   
@@ -176,7 +173,6 @@ let octValue string =
 ;;
 
 let decValue string =
-(*print_endline ("*"^string^"*");*)
 (int_of_string string)
 ;;
 
@@ -290,17 +286,10 @@ output)
 		))
 	    | _ ->
 		parseStringAux fonts ((makeChar fonts (Char.code second) space)::output) space))
-
-
-
-(*( parseStringAux fonts ((makeChar fonts (Char.code second) space)::output) space))*)
     else (
-      
       parseStringAux fonts ((makeChar fonts (Char.code first) space)::output)) 0.
       
 let rec parseString fonts output operator space =
- (* print_endline (!contents);*)
-(*  print_char (String.get (!contents) 0 );*)
   if (Str.string_match (Str.regexp "-?[0-9]+\\.?[0-9]*") (!contents) 0) 
   then (
     let space = float_of_string (Str.matched_string (!contents)) in
@@ -310,7 +299,6 @@ let rec parseString fonts output operator space =
     let first = String.get (!contents) 0 in
       
       if (first = ']') || ((first = ')') & (operator != "TJ")) then (
-	(*print_endline ("::"^operator);*)
 	if (Str.string_match (Str.regexp ") *Tj") (!contents) 0) 
 	then (contents := Str.string_after (!contents) (Str.match_end ());
 	      output)
@@ -336,33 +324,7 @@ let rec parseString fonts output operator space =
 	contents := (Str.string_after (!contents) 1);
 	parseString fonts (parseStringAux fonts output space) operator 0.)
       else parseString fonts (parseStringAux fonts output space) operator 0.)
-    (*
-      if (first = ']') && (Str.string_match (Str.regexp "] *TJ") (!contents) 0)
-      then (contents := Str.string_after (!contents) (Str.match_end ());
-	    output;)
-      else if (first = ')')  && (Str.string_match (Str.regexp ") *Tj") (!contents) 0) 
-      then (print_string "£££££££££££££££";
-	contents := Str.string_after (!contents) (Str.match_end ());
-	    output)
-      else if (first = ')') && (operator = "'") && (Str.string_match (Str.regexp ") *'") (!contents) 0) 
-      then (contents := Str.string_after (!contents) (Str.match_end ());
-	    output)
-      else if (first = ')') && (operator = "\"") && (Str.string_match (Str.regexp ") *\"") (!contents) 0) 
-      then (contents := Str.string_after (!contents) (Str.match_end ());
-	    output)
-      else if (first = ')') && (operator = "Tj") && (Str.string_match (Str.regexp ") *Tj") (!contents) 0) 
-      then (contents := Str.string_after (!contents) (Str.match_end ());
-	    output)
-      else  if (first = ']') 
-      then (contents := (Str.string_after (!contents) 1);
-	    parseString fonts output operator space;)
-      else if first = '[' ||  first = ' ' 
-      then (contents := (Str.string_after (!contents) 1);
-	    parseString fonts output operator space;)
-      else if first = '(' then (
-	contents := (Str.string_after (!contents) 1);
-	parseString fonts (parseStringAux fonts output space) operator 0.)
-      else parseString fonts (parseStringAux fonts output space) operator 0.)*)
+
 (** 
     @edited:  13-MAR-2012
     @author:  Josef Baker
@@ -371,22 +333,14 @@ let rec parseString fonts output operator space =
     @output:  the operator as a string
  *)
 let rec getShowOperator inString = 
-(*print_string (Str.first_chars  inString 1);*)
   if (Str.string_match (Str.regexp ") *Tj") inString 0) then "Tj"
-(* else if (Str.string_match (Str.regexp "\\") inString 0) then getShowOperator ((Str.string_after (inString) 3))*)
   else if (Str.string_match (Str.regexp ") *'") inString 0) then "'"
   else if (Str.string_match (Str.regexp ") *\"") inString 0) then "\""
   else getShowOperator ((Str.string_after (inString) 1))
 
-
-   
 let rec btReader fonts output =
- (* print_string "BT";*)
   if String.length (!contents) = 0 
   then output
-  
-      
-
   else if (Str.string_match (Str.regexp "ET") (!contents) 0)
   then (
 contents := Str.string_after (!contents) ((Str.match_end ()));
@@ -447,7 +401,6 @@ contents := Str.string_after (!contents) ((Str.match_end ()));
 			     btReader fonts output))
 
  (*Text positioning operators*)
-  
   else if (Str.string_match (Str.regexp "-?[0-9]+\\.?[0-9]* +-?[0-9]+\\.?[0-9]* +Td") (!contents) 0) 
   then ((*print_string "Td ";*)
 	match (Str.split (Str.regexp " +") (Str.matched_string (!contents))) with 
@@ -637,9 +590,7 @@ let rec streamReader fonts output graphicStack linePoints=
     else
       streamReader fonts output graphicStack linePoints
   )
- 
-  (*Anything else*)
-  else (
+   else ( 
     contents := (Str.string_after (!contents) 1);
     streamReader fonts output graphicStack linePoints)
 ;;
@@ -654,8 +605,6 @@ let rec printElems elems =
 			print_string ",";
 			print_float chr.chy;
 			print_string ":";
-			(*print_float chr.chw;
-			print_string "\n";*)
 			printElems t;)
 	  | Ln ln   -> (print_string "line";
 			print_string ",";
@@ -663,13 +612,6 @@ let rec printElems elems =
 			print_string ",";
 			print_float ln.sty;
 			print_string ":";
-			(*print_float ln.enx;
-			print_string ",";
-			print_float ln.eny;
-			print_string ",";
-			print_float ln.lnw;
-			print_string "\n";*)
-
 			printElems t;)
       )
     | [] -> print_string ("\n\n");
@@ -681,7 +623,6 @@ let rec parse pageList elemLists test =
 verbose := false;
   match pageList with
       h::t -> (
-(*print_string "!£!";*)
 contents := "";
 textStr := "";
 
@@ -697,27 +638,10 @@ textMatrix :=  {a=1.0;b=0.0;c=0.0;d=1.0;e=0.0;f=0.0};
 lineMatrix :=  {a=1.0;b=0.0;c=0.0;d=1.0;e=0.0;f=0.0};
 ctMatrix := {a=1.0;b=0.0;c=0.0;d=1.0;e=0.0;f=0.0};
 
-
 contents := h.Pdfextractor.contents;
-
-(*print_string (!contents);*)
-
 	       let elems = (List.rev ( streamReader h.Pdfextractor.fonts [] [] [])) in
 		 if (!verbose) then printElems elems;
 		 parse t (elems::elemLists) test;
 	      )
     | _ -> (elemLists)
 ;;
-(*
-  let m1 = {a=1.0;b=0.0;c=0.0;d=1.0;e=148.712;f=707.125} in
-  let m2 = {a=1.0;b=0.0;c=0.0;d=1.0;e=0.0;f=0.0} in
-  let m3 = matrixX m1 m2 in
-    print_float m3.a;print_char ',';
-    print_float m3.b;print_char ',';
-    print_float m3.c;print_char ',';
-    print_float m3.d;print_char ',';
-    print_float m3.e;print_char ',';
-    print_float m3.f;print_char ',';
-;;
-
-*)

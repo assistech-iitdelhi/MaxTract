@@ -186,66 +186,6 @@ let rec getGlyphElemOverlap glyph elems overlap hGScale vScale hEScale=
     | _ -> overlap
 ;;
 
-
-(*
-let rec multiMatchAux glyphs elems symbs =
- match glyphs with 
-      h::t ->(
-	let overlap = getOverlap h elems [] 1. 1. 0.8 in
-		 if (List.length overlap) > 1 then 
-		   multiMatchAux t elems ({glList=([h]); elList = overlap}::symbs)
-		 else
-		   multiMatchAux t elems symbs)
-    | _ -> symbs
-
-let rec multiMatch symbols= 
-
-  let symbols1 = (multiMatchAux (!glyphLst)  (!elemLst) [])@symbols in
-  
-    elemLst :=  removeDupChars !elemLst symbols1 [];
-    glyphLst := removeDupGlyphs !glyphLst symbols1 []; 	
-    
-    if (List.length symbols1) = (List.length symbols) then symbols1
-    else multiMatch symbols1 
-;;
-
-
-
-
-let rec upperMatch chars symbols =
-  match chars with
-      h::t -> (let upper = findUpper h (!glyphLst) [] in
-		 if (List.length upper) = 1 then  (
-		   let newSymbol = {elList=[h];glList=upper} in
-		   glyphLst := removeDupGlyphs (!glyphLst) [newSymbol] [];
-		     upperMatch  t (newSymbol::symbols))
-		 else upperMatch  t symbols
-	      )
-	
-    | _ -> (getAbove symbols [])
-;;
-
-let basicMatch symbols =  
-  
-  let symbols = (singleMatch  [] 1. 1. 1.)@symbols in
-    
-  let symbols = (singleMatch  [] 1. 1. 0.4)@symbols in
-    
-  let symbols = (singleMatch  [] 0.9 1. 0.4)@symbols in
-    
-  let symbols = (singleMatch   [] 1. 1.1 1.)@symbols in
-    
-  let symbols = (singleMatch   [] 1. 1.1 0.4)@symbols in
-    
-  let symbols = sortSymbolY symbols in  
- 
-  let symbols = getAbove symbols  [] in
-    
-    symbols
-;;
-
-*)
-
 let hasAbove ch =
   (ch ="j") || (ch ="i") || (ch="equal") || (ch="colon") || (ch="greaterequal")
   || (ch="lessequal")|| (ch="semicolon")
@@ -516,22 +456,11 @@ let makeSymbols glyphs elems =
   let singles3 = singlesMatch (!glyphLst) (!elemLst) in
   let bigGlyphs3 = bigGlyphMatch (!glyphLst) [] in
 
-
   let lowers = lowerMatch (!elemLst) [] in
 
   let symbols =  roots@singles@bigGlyphs@uppers@singles2@bigGlyphs2@singles3@bigGlyphs3@lowers in
 
   let symbols = getAbove symbols [] in
-(*
-    let symbols = basicMatch [] in
-      
-      
-    let symbols = ((upperMatch !elemLst [])@symbols) in
-      elemLst :=  removeDupChars !elemLst symbols [];
-    
-      glyphLst := sortGlyphX !glyphLst;
-      elemLst := sortElemX !elemLst;
-*)      
       if (List.length (!glyphLst) <(-1))then(
 	print_endline ("After Match");
 	printGlyphs (!glyphLst);

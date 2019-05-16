@@ -40,7 +40,7 @@ or
 
 # Running
 
-Make sure the files extractElements(.opt), cll, pdf2tiff are in the same directory.
+Make sure the files extractElements(.opt), ccl, pdf2tiff are in the same directory.
 Then run
 
     ./extractElements -f input.pdf -d output_directory

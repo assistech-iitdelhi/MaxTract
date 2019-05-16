@@ -255,15 +255,6 @@ let getPageTree chan test =
   let pageTree = Str.split (regexp "[ \t]+") (getKeyValue catalog "Kids" chan) in
     List.rev (getPages chan pageTree []);;    
 
-(*
-let stripFront stream =
-;;
-let stripBack stream =
-;;
-let stripBoth stream =
-;;
-*)
-
 let rec fixContentsAux list stream chan=
   match list with
     | obj::"0"::"R"::t -> fixContentsAux t (stream^" "^(getObj (obj^" 0") chan)) chan

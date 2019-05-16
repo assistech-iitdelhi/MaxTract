@@ -50,8 +50,8 @@ let stringInt i =
 (** 
     @edited:  22-FEB-2012
     @author:  Josef Baker
-    @input:   
-    @effects: 
+    @input:  name of "directory" under which to create "count" subdirectories
+    @effects: generates json for every page and moves to dir/000, dir/001, dir/002 ... 
     @output:  
  *)
 let rec makeJson dir count =
@@ -142,10 +142,7 @@ let rec extractPages dir count pageList elementList=
 	     let glyphs = Align.convertGlyphs clip.LoadClip.glyphs [] in
 	     let lines = LineFinder.findLines glyphs in
 	     let matched = matchLines lines aligned [] in
-	       
-	       
  	       saveClips clip matched 0 (dir^(stringInt count)^"/");
-	       
 	       extractPages dir (count+1) pageTl elemTl 
 	   )
 	     
@@ -158,21 +155,13 @@ let extractFile inFile inDirectory=
   let file = ref "" in
     
     try(
-      
       dir := prepFile inFile inDirectory;
       file := (!dir)^(!name)^".pdf";
     
       let inCh = open_in_bin (!file) in
-	
-
 	let pageTree = Pdfextractor.getPageTree inCh !test in
-	  
-
-	  
 	  let pageList = Pdfextractor.extractPDF inCh pageTree [] in
 	    close_in inCh;
-
-	    
 	    let elements = Contentparser.parse pageList [] !print in
 	      
 	      if (!jsondir) = "" then(	    
