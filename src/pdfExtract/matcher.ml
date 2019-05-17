@@ -14,9 +14,6 @@ let elemLst = ref []
 let btLn = ref (Ln {stx=0.; sty=99999.; enx=0.; eny=99999.; lnw=0.})
 let rtCh = ref (Chr {chname=""; chfont=""; chsize=0.; chx=99999.; chy=0.; chw=0.})
 
-
-
-
 (** 
     @edited:  08-JUN-2010
     @author:  Josef Baker
@@ -99,15 +96,10 @@ let rec removeDupGlyphs glyphs symbols symbolGlyphs =
     | [] ->  checkGlyphs glyphs [] symbolGlyphs
 ;;
 
-
-
-
-
 let rec convElems elems out =
   match elems with
       h::t ->(match h with 
 		  Chr chr -> convElems t (PDFChar {Jsonfio.JsonfIO.c=chr.chname;
-
 						   bx=(int_of_float chr.chx);
 						   by=(int_of_float chr.chy);
 						   font=chr.chfont;
@@ -168,7 +160,6 @@ let rec sortSymbolY = function
       let left, right = List.partition is_less rest in
       sortSymbolY left @ [pivot] @ sortSymbolY right
 ;;
-
 
 
 (** 
@@ -431,9 +422,7 @@ let rec rootMatch glyphs symbols =
  *)
 let makeSymbols glyphs elems =
 
-(*	printElems (elems);*)
   let bottom = findBottom glyphs 0 in
-
 
   elemLst :=  sortElemX (cutElems bottom elems []);
   glyphLst := sortGlyphX glyphs;
@@ -467,7 +456,6 @@ let makeSymbols glyphs elems =
 	printElems (!elemLst);
 	print_endline ("Next Line");
       );
-(*    printSymbols symbols;*)
 symbols
 
 ;;

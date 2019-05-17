@@ -6,7 +6,6 @@ let test = ref false
 let uncomp = ref false
 
 
-
 (** 
     @edited:  22-FEB-2012
     @author:  Josef Baker
@@ -20,12 +19,7 @@ let uncompress file =
       system ("mkdir "^dir);
       system ("pdftk "^file^" output "^dir^"/uncompressed.pdf uncompress");
       (dir^"/")
-  
-
 ;;
-
-
-
 
 
 let extractFile inFile=
@@ -76,29 +70,7 @@ let extractFile inFile=
     )  
 ;;
 
-(*
-
-let usage = "usage: " ^ Sys.argv.(0) ^ " [-f file] [-t] [-u]"
- 
-let speclist = [
-    ("-f", Arg.String (fun f -> pdf := f), ": -f Name of PDF file");
-  ("-u", Arg.Unit (fun () -> uncomp := true), ": -u If file is uncompressed");
-    ("-t", Arg.Unit (fun () -> test := true), ": -t Set testing mode on");
-  ]
-
-let () =
-  (* Read the arguments *)
-  Arg.parse
-    speclist
-    (fun x -> raise (Arg.Bad ("Bad argument : " ^ x)))
-    usage;
-  ignore(extractFile (!pdf));
-*)
-
 let main inFile =
 pdf:= inFile;
-(*print_string ("****"^(!pdf)^"*******");*)
 extractFile (!pdf);
 ;;
-    
-(*main Sys.argv.(1);*)

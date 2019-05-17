@@ -1,6 +1,5 @@
 let lineTol = 5 ;;
 
-
 (*Comparison of top sides of a glyph*)
 let glyphLessY s1 s2 =
   (s1.Jsonfio.JsonfIO.y)>
@@ -49,8 +48,4 @@ let findLines glyphs =
 	[] -> []
       | h::t -> List.rev( getLines  (h.Jsonfio.JsonfIO.y + h.Jsonfio.JsonfIO.h) t (h::[]) []	
 	)
-	  
 ;;
-
-
-

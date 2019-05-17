@@ -11,7 +11,6 @@
 open Json_type
 open Json_type.Browse
 
-
 type glyphBoundBox = {
   x:int;
   y:int;
@@ -42,8 +41,6 @@ let getClip file =
       } in
   let jsonClip = Json_io.load_json file in
 
-(*  let jsonClip = Json_io.json_of_string file in
-*)
   let clipTbl = make_table (objekt jsonClip) in
   let optClipImage = Browse.optional Browse.string (Browse.fieldx clipTbl "ClipImage") in
     {
@@ -77,6 +74,3 @@ let getPageSize file =
   let clip = getClip file in
     {x=0 ; y=0; w=clip.pageWidth; h=clip.pageHeight}
 ;;
-
- 
- 

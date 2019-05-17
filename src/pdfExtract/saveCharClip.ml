@@ -23,18 +23,14 @@ let rec toText inp outp =
   with End_of_file -> outp
 ;;
 
+
 let printNewFClip cl fb  file=
-
-
   let myNewCharClip = myNewFontClipFn cl fb file in
     JsonfIO.printClip  myNewCharClip;
 ;;
 
+
 let saveNewFClip cl fb  file name=
-
-
   let myNewCharClip = myNewFontClipFn cl fb file in
     JsonfIO.saveClip name  myNewCharClip;
 ;;
-
-

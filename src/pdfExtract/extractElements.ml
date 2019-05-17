@@ -10,11 +10,10 @@ let directory = ref ""
 let jsondir = ref ""
 
 
-
 (** 
     @edited:  22-FEB-2012
     @author:  Josef Baker
-    @input:   input PDF file and directory in which to decompress it, if requested
+    @input:   input PDF file and directory in which to decompress it, if compressed
     @effects: creates specified directory, and copies (uncompressed) PDF there
     @output:  name of directory created or jsondir if that is specified by user
  *)
@@ -76,9 +75,7 @@ let rec matchLines lines chars matchedLines =
 		if matched = [] then matchLines t chars matchedLines
 		else  matchLines t (Matcher.removeDupChars chars matched [])
 		   ((Matcher.convert matched [])::matchedLines))
-    | _ -> ((*Match.printChars chars;*)
-
-List.rev matchedLines)
+    | _ -> (List.rev matchedLines)
 ;;
 
 
@@ -93,49 +90,15 @@ List.rev matchedLines)
 let rec saveClips clip matched count dir=
   match matched with
       h::t -> ( 
- (*  print_string dir;
-print_newline;*)
 SaveCharClip.saveNewFClip clip h (!name) (dir^(stringInt count)^".jsonf");
 		saveClips clip t (count+1) dir;)
-    | _ -> ((*print_string "error";*))
-;;
-
-let rec matchPage dir count pageHd elemHd=
-  try (
-    let jsonfile = (dir^"/"^(stringInt count)^".json") in
-print_endline jsonfile;
-
-    let clip = LoadClip.getClip jsonfile in
-    let aligned = Align.alignElems clip pageHd elemHd in
-    let glyphs = Align.convertGlyphs clip.LoadClip.glyphs [] in
-    let matched = Matcher.makeSymbols glyphs aligned in
-
-      SaveCharClip.saveNewFClip clip (Matcher.convert matched []) (!name) (dir^"/"^(stringInt count)^".jsonf");
-      matchPage dir (count+1) pageHd (Matcher.removeDupChars elemHd matched [])
-  )
-  with error -> ()
-;;
-
-
-let rec matchPages dir count pageList elementList=
-  match pageList,elementList with
-      pageHd::pageTl,[]::elemTl -> (
-	matchPages dir (count+1) pageTl elemTl
-      )
-    | pageHd::pageTl,elemHd::elemTl -> (
-	matchPage (dir^(stringInt count)) 0 pageHd elemHd);
-
-	matchPages dir (count+1) pageTl elemTl
-    | _,_ -> () 
+    | _ -> ()
 ;;
 
 let rec extractPages dir count pageList elementList=
   match pageList,elementList with
-      pageHd::pageTl,[]::elemTl -> (
-	extractPages dir (count+1) pageTl elemTl
-      )
-  |      pageHd::pageTl,elemHd::elemTl -> (
-(*print_endline ("Page");*)
+    pageHd::pageTl,[]::elemTl -> (extractPages dir (count+1) pageTl elemTl)
+  | pageHd::pageTl,elemHd::elemTl -> (
 	     let jsondir = (dir^(stringInt count)^"/"^(!name)^"-"^(string_of_int count)^".json") in
 	     let clip = LoadClip.getClip jsondir in
 	     let aligned = Align.alignElems clip pageHd elemHd in
@@ -145,8 +108,7 @@ let rec extractPages dir count pageList elementList=
  	       saveClips clip matched 0 (dir^(stringInt count)^"/");
 	       extractPages dir (count+1) pageTl elemTl 
 	   )
-	     
-    | _,_ -> () 
+  | _,_ -> () 
 ;;
 
 let extractFile inFile inDirectory=
@@ -154,7 +116,7 @@ let extractFile inFile inDirectory=
   let dir = ref "" in
   let file = ref "" in
     
-    try(
+  try(
       dir := prepFile inFile inDirectory;
       file := (!dir)^(!name)^".pdf";
     
@@ -164,37 +126,33 @@ let extractFile inFile inDirectory=
 	    close_in inCh;
 	    let elements = Contentparser.parse pageList [] !print in
 	      
+	      (* run pdf2tiff followed by ccl to get json from pdf's image *)
 	      if (!jsondir) = "" then(	    
 		system ("./pdf2tiff "^(!file));
 		makeJson !dir ((List.length pageTree)-1););
 	  
+	  (* compare the json's *)
 	  extractPages !dir 0 (List.rev pageList) elements;
 	  
 	  ();
     )
-    with error -> (print_string (Printexc.to_string error);(*system ("rm -fR "^(!dir));*) ();)
-      
+    with error -> (print_string (Printexc.to_string error); ();)
 ;;
 
 
-let extractElements () =
-
-  let usage = "usage: " ^ Sys.argv.(0) ^ " [-f file] [-t] [-u] [-p] [-d dir] [-j dir]" in
-  let speclist = [
-    ("-d", Arg.Set_string directory, ": -d Name of directory");
-    ("-f", Arg.Set_string pdf, ": -f Name of PDF file");
-    ("-u", Arg.Set uncomp, ": -u If file is uncompressed");
-    ("-t", Arg.Set test, ": -t Set verbose mode on");
-    ("-p", Arg.Set print, ": -p Print output to sdout");
-    ("-j", Arg.Set_string jsondir, ": -j Name of json directory");
-  ]
-  in
-    (* Read the arguments *)
-    Arg.parse
-      speclist
-      (fun x -> raise (Arg.Bad ("Bad argument : " ^ x)))
-      usage;
-    ignore(extractFile (!pdf) (!directory))
-    
-    
-let _ = extractElements ()
+let usage = "usage: " ^ Sys.argv.(0) ^ " [-f file] [-t] [-u] [-p] [-d dir] [-j dir]" in
+let speclist = [
+  ("-d", Arg.Set_string directory, ": -d Name of directory");
+  ("-f", Arg.Set_string pdf, ": -f Name of PDF file");
+  ("-u", Arg.Set uncomp, ": -u If file is uncompressed");
+  ("-t", Arg.Set test, ": -t Set verbose mode on");
+  ("-p", Arg.Set print, ": -p Print output to sdout");
+  ("-j", Arg.Set_string jsondir, ": -j Name of json directory");
+]
+in
+  (* Read the arguments *)
+  Arg.parse
+    speclist
+    (fun x -> raise (Arg.Bad ("Bad argument : " ^ x)))
+    usage;
+  ignore(extractFile (!pdf) (!directory))

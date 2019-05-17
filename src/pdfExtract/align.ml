@@ -3,38 +3,6 @@ open Contentparser;;
 open LoadClip;;
 open Str;;
 
-
-
-(** Not used anymore....
-    @edited:  02-JUN-2010
-    @author:  Josef Baker
-    @input:   Coordinates of clip and list of pdf elements
-    @effects: 
-    @output:  All pdf elements within clip area
- *)
-let rec clipChars x1 x2 y1 y2 inList outList =
-  match inList with
-      h::t ->( match h with
-		   Ln ln ->
-		     ( if ((ln.Contentparser.stx  >= x1) 
-			   && (ln.Contentparser.enx <= x2) 
-			   && (ln.Contentparser.sty >= y1) 
-			   && (ln.Contentparser.eny <= y2)) then 
-			 clipChars x1 x2 y1 y2 t (h::outList)
-		       else clipChars x1 x2 y1 y2 t outList)
-		 | Chr chr ->
-		     ( if ((((chr.Contentparser.chx) +. (chr.Contentparser.chw /. 2.)) >= x1) 
-			   && (chr.Contentparser.chx <= x2) 
-			   && ((chr.Contentparser.chy >= y1) || ((chr.Contentparser.chy +. chr.Contentparser.chsize/.2.) >=y1)) 
-			   && ((chr.Contentparser.chy <= y2) || ((chr.Contentparser.chy -. chr.Contentparser.chsize/.2.) <=y2))) then 
-			 clipChars x1 x2 y1 y2 t (h::outList)
-		       else clipChars x1 x2 y1 y2 t outList)
-	     )
-    | [] ->  outList
-;;
-
-
-
 (** 
     @edited:  02-JUN-2010
     @author:  Josef Baker
@@ -79,29 +47,12 @@ let rec printChLst chars =
 		    printChLst t;)
     | _ -> (print_newline ();)
 
-
-
-
 let align  pdfList mediaBox pageSize clipSize=
-(*  
-  let x1 = float_of_int clipSize.LoadClip.x in
-  let x2 = (float_of_int clipSize.LoadClip.w) +. x1 in
-  let y1 = float_of_int clipSize.LoadClip.y in
-  let y2 = (float_of_int clipSize.LoadClip.h) +. y1 in
-*)
-    
     
   let xRatio = ((mediaBox.mwidth) /. (float_of_int pageSize.LoadClip.w)) in
   let yRatio = ((mediaBox.mheight) /. (float_of_int pageSize.LoadClip.h)) in
     
-    
   let alignedChars =  alignChars xRatio yRatio (mediaBox.mheight) pdfList [] in
-(*
-  let clipped = clipChars x1 x2 y1 y2 alignedChars [] in*)
-(*
-printChLst pdfList;
-print_newline ();
-*)
     alignedChars
 ;;
 

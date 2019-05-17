@@ -10,16 +10,6 @@ type font = {fname: string ; chars: char list ; ffamily:string};;
 type mediabox = {mx:float; my:float; mwidth:float; mheight:float}
 type page = {dimensions: mediabox; fonts: font list; contents: string}
 
-
-
-let rec p l =
-  match l with
-      h::t ->(print_string h; 
-	      print_string " \n";
-	      p t)
-    | []-> print_newline ()
-;;
-
 let rec pf l i=
   match l with
       h::t ->(print_string ((string_of_int i)^" "^h.cname^" "^(string_of_float h.cwidth)^": "); 
@@ -57,7 +47,7 @@ let trim str =   if str = "" then "" else   let search_pos init p next =
     @output:  
  *)
 let findObj obj chan =
-  if (!verbose) then print_string ("Searching for "^obj^"\n");  
+  if !verbose then print_string ("Searching for "^obj^"\n");  
   seek_in chan 0;
   let name = ref (regexp obj) in
     
@@ -86,6 +76,18 @@ objStr := (!tempObj);
 
 objStr := global_replace (regexp "[0-9]* [0-9]* obj") "" (!objStr);
     
+    (* Extract everything trailer upto, but not including, %%EOF 
+     e.g. extract this in a single line
+        trailer 
+	<<
+	/Info 22 0 R
+	/ID [<9ff1e1bf2b4d787817c1adf56b50a0a3> <9ff1e1bf2b4d787817c1adf56b50a0a3>]
+	/Root 21 0 R
+	/Size 23
+	>>
+	startxref
+	35248
+    *)
     if (obj = "trailer") then(
      let endObj = regexp_string "%%EOF" in
       let line = ref (input_line chan) in
@@ -95,6 +97,7 @@ objStr := global_replace (regexp "[0-9]* [0-9]* obj") "" (!objStr);
 	  objStr := (!objStr^" "^(!line));
 	    line := (input_line chan);
 	done;
+        if (!verbose) then print_string !objStr;
 	!objStr
       with End_of_file -> !objStr
     )
@@ -301,7 +304,7 @@ let makeListOfArray array =
 let rec fixEncoding encoding fixed count =
 
   match encoding with
-      h::t -> ((*print_string h; print_string " ";*)
+      h::t -> (
 	if h.[0] = '/' then fixEncoding t (h::fixed) (count+1)
 	else if  (List.length fixed) < (int_of_string h)  then
 	  fixEncoding encoding ((Ascii.getAsciiChar ((List.length fixed)))::fixed) (count+1)
@@ -347,6 +350,7 @@ let rec fixWidths firstChar widths fixed =
 	      else fixed))
 ;;
 
+
 (** 
     @edited:  21-FEB-2012
     @author:  Josef Baker
@@ -360,7 +364,6 @@ let rec makeEncoding  differences widths chars =
     | _ -> chars
 
 ;;
-    
 
 
 (** Get dup values from a string.
@@ -420,8 +423,6 @@ let rec getFonts chan fontList fonts =
 			  diffs := Ascii.ascii
 		    else diffs := (fixEncoding (makeListOfArray differences) []);
 		    let charList = makeEncoding (!diffs)  (fixWidths (int_of_string firstChar) (makeListOfArray widths) []) [] in
-		      (*print_string name; print_newline ();		     
-			pf charList;*)
 		      getFonts chan tail ({fname=name;chars=charList;ffamily=baseFont}::fonts))
     | h::t -> getFonts chan t fonts
     | _ -> fonts
@@ -448,9 +449,7 @@ let rec extractPDF chan pageTree pageList =
 	    let resources = getOptionalKeyValue h "Resources" chan in
 	      
 	      if (!verbose) then print_string ("Resources:  "^resources^"\n");
-	    (*  print_string (getOptionalKeyValue resources "Font" chan);*)
 	      let fontList = getFonts chan (Str.split (regexp " /\\|[ \t]+\\|/\\|>>") (getOptionalKeyValue resources "Font" chan)) [] in
-		(*	let fontList = getFonts chan (Str.split (regexp "[ \t]+\\|/") (getOptionalKeyValue resources "Font" chan)) [] in*)
 		if (!verbose) then (print_string ("Fonts:  ");
 				    pfs fontList ;
 				    print_newline (););
