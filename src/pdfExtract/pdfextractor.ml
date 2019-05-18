@@ -76,17 +76,17 @@ objStr := (!tempObj);
 
 objStr := global_replace (regexp "[0-9]* [0-9]* obj") "" (!objStr);
     
-    (* Extract everything trailer upto, but not including, %%EOF 
+    (* Extract everything from trailer upto, but not including, %%EOF 
      e.g. extract this in a single line
-        trailer 
-	<<
-	/Info 22 0 R
-	/ID [<9ff1e1bf2b4d787817c1adf56b50a0a3> <9ff1e1bf2b4d787817c1adf56b50a0a3>]
-	/Root 21 0 R
-	/Size 23
-	>>
-	startxref
-	35248
+trailer 
+<<
+/Info 22 0 R
+/ID [<9ff1e1bf2b4d787817c1adf56b50a0a3> <9ff1e1bf2b4d787817c1adf56b50a0a3>]
+/Root 21 0 R
+/Size 23
+>>
+startxref
+35248
     *)
     if (obj = "trailer") then(
      let endObj = regexp_string "%%EOF" in
@@ -331,7 +331,6 @@ let rec makeDupEncoding dups encoding =
 	256 -> encoding
       | _ -> makeDupEncoding dups ((findDup dups length)::encoding)
 ;;
-
 
 
 (** 

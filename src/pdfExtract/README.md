@@ -26,6 +26,7 @@ Under a Debian distribution install using
 
 - Make sure pdf2tiff is executable.
 
+- json-wheel and its dependencies including netstring that comes from package ocamlnet. json-wheel must be downloaded and installed manually. If it fails looking for netstring install ocamlnet using opam install ocamlnet.
 
 # Build
 

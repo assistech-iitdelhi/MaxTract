@@ -82,7 +82,7 @@ module JsonfIO = struct
       
       
   (** 
-      Jasonf to Ocaml translation of a pdfChar
+      Jsonf to Ocaml translation of a pdfChar
       @edited:  06-DEC-2009
       @author:  Alan P. Sexton
   *)
@@ -97,7 +97,7 @@ module JsonfIO = struct
       }
         
   (** 
-      Jasonf to Ocaml translation of a line
+      Jsonf to Ocaml translation of a line
       @edited:  06-DEC-2009
       @author:  Alan P. Sexton
   *)
@@ -112,7 +112,7 @@ module JsonfIO = struct
       }
         
   (** 
-      Jasonf to Ocaml translation of a bounding box
+      Jsonf to Ocaml translation of a bounding box
       @edited:  06-DEC-2009
       @author:  Alan P. Sexton
   *)
@@ -126,7 +126,7 @@ module JsonfIO = struct
       }
         
   (** 
-      Jasonf to Ocaml translation of an element (note that this is a sum type)
+      Jsonf to Ocaml translation of an element (note that this is a sum type)
       @edited:  06-DEC-2009
       @author:  Alan P. Sexton
   *)
@@ -142,7 +142,7 @@ module JsonfIO = struct
                                     (Json_io.string_of_json v)))
             
   (** 
-      Jasonf to Ocaml translation of a symbol
+      Jsonf to Ocaml translation of a symbol
       @edited:  06-DEC-2009
       @author:  Alan P. Sexton
   *)
@@ -155,7 +155,7 @@ module JsonfIO = struct
       }
         
   (** 
-      Jasonf to Ocaml translation of a clip
+      Jsonf to Ocaml translation of a clip
       @edited:  06-DEC-2009
       @author:  Alan P. Sexton
   *)
@@ -184,7 +184,7 @@ module JsonfIO = struct
       j2oClip jsonClip
         
   (** 
-      Ocaml to Jasonf translation of a pdfChar
+      Ocaml to Jsonf translation of a pdfChar
       @edited:  06-DEC-2009
       @author:  Alan P. Sexton
   *)
@@ -198,7 +198,7 @@ module JsonfIO = struct
     ]
       
   (** 
-      Ocaml to Jasonf translation of a line
+      Ocaml to Jsonf translation of a line
       @edited:  06-DEC-2009
       @author:  Alan P. Sexton
   *)
@@ -212,7 +212,7 @@ module JsonfIO = struct
     ]
 
   (** 
-      Ocaml to Jasonf translation of a bounding box
+      Ocaml to Jsonf translation of a bounding box
       @edited:  06-DEC-2009
       @author:  Alan P. Sexton
   *)
@@ -225,7 +225,7 @@ module JsonfIO = struct
     ]
       
   (** 
-      Ocaml to Jasonf translation of an element
+      Ocaml to Jsonf translation of an element
       @edited:  06-DEC-2009
       @author:  Alan P. Sexton
   *)
@@ -234,7 +234,7 @@ module JsonfIO = struct
     | PDFChar(pc) -> Build.array [ Build.string "pdfChar"; o2jPdfChar pc ]
         
   (** 
-      Ocaml to Jasonf translation of a symbol
+      Ocaml to Jsonf translation of a symbol
       @edited:  06-DEC-2009
       @author:  Alan P. Sexton
   *)
@@ -246,7 +246,7 @@ module JsonfIO = struct
     ]
       
   (** 
-      Ocaml to Jasonf translation of a clip
+      Ocaml to Jsonf translation of a clip
       @edited:  06-DEC-2009
       @author:  Alan P. Sexton
   *)
@@ -282,15 +282,3 @@ module JsonfIO = struct
     (loadClip file).symbols
 
 end
-
-
-(* For testing only: *)
-
-(* let x = JsonfIO.loadClip "tst.jsonf" *)
-
-(* let _= JsonfIO.saveClip "tstSave.jsonf" x *)
-
-(* let y = JsonfIO.loadClip "tstSave.jsonf" *)
-
-(* let _= JsonfIO.saveClip "tstSave2.jsonf" y *)
-
