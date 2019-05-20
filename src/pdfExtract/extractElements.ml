@@ -50,7 +50,10 @@ let stringInt i =
     @edited:  22-FEB-2012
     @author:  Josef Baker
     @input:  name of "directory" under which to create "count" subdirectories
-    @effects: generates json for every page and moves to dir/000, dir/001, dir/002 ... 
+    @effects: use ccl to generate json from tif of every page and move to 
+        <directory>/000-<filename>.json, 
+        <directory>/001-<filename>.json, 
+        <directory>/002-<filename>.json ... 
     @output:  
  *)
 let rec makeJson dir count =
@@ -99,6 +102,7 @@ let rec extractPages dir count pageList elementList=
   match pageList,elementList with
     pageHd::pageTl,[]::elemTl -> (extractPages dir (count+1) pageTl elemTl)
   | pageHd::pageTl,elemHd::elemTl -> (
+             (* open the json created by ccl *)
 	     let jsondir = (dir^(stringInt count)^"/"^(!name)^"-"^(string_of_int count)^".json") in
 	     let clip = LoadClip.getClip jsondir in
 	     let aligned = Align.alignElems clip pageHd elemHd in
