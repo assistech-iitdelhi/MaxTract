@@ -6,7 +6,7 @@ open LoadClip;;
     @edited:  02-JUN-2010
     @author:  Josef Baker
     @input:   x and y ratio of pdf file to clip image height of pdf file and list of pdf elements
-    @effects:
+    @effects: scales the pdf coordinates to match those of the clip
     @output:  list of pdf elements scaled andin correct coordinate system
  *)
 let rec alignChars xRatio yRatio pHeight inList outList =
@@ -15,19 +15,21 @@ let rec alignChars xRatio yRatio pHeight inList outList =
                 match h with
                 Ln ln -> alignChars xRatio yRatio pHeight t (
                         Ln {
-                Contentparser.stx=(ln.Contentparser.stx /. xRatio);
-                Contentparser.sty=((pHeight -. ln.Contentparser.sty) /.yRatio);
-		Contentparser.enx=(ln.Contentparser.enx /. xRatio);
-                Contentparser.eny=((pHeight -. ln.Contentparser.eny) /.yRatio);
-                Contentparser.lnw=((ln.Contentparser.lnw) /. xRatio);}::outList)
+                                Contentparser.stx=(ln.Contentparser.stx /. xRatio);
+                                Contentparser.sty=((pHeight -. ln.Contentparser.sty) /.yRatio);
+                                Contentparser.enx=(ln.Contentparser.enx /. xRatio);
+                                Contentparser.eny=((pHeight -. ln.Contentparser.eny) /.yRatio);
+                                Contentparser.lnw=((ln.Contentparser.lnw) /. xRatio);
+                        }::outList)
                 | Chr chr -> alignChars xRatio yRatio pHeight t (
                         Chr {
-                Contentparser.chname = chr.Contentparser.chname;
-		Contentparser.chfont = chr.Contentparser.chfont;
-		Contentparser.chsize = chr.Contentparser.chsize;
-		Contentparser.chx=(chr.Contentparser.chx /. xRatio);
-		Contentparser.chy=((pHeight -. chr.Contentparser.chy) /.yRatio);
-		Contentparser.chw=((chr.Contentparser.chw)/. xRatio);}::outList)
+                                Contentparser.chname = chr.Contentparser.chname;
+                                Contentparser.chfont = chr.Contentparser.chfont;
+                                Contentparser.chsize = chr.Contentparser.chsize;
+                                Contentparser.chx=(chr.Contentparser.chx /. xRatio);
+                                Contentparser.chy=((pHeight -. chr.Contentparser.chy) /.yRatio);
+                                Contentparser.chw=((chr.Contentparser.chw)/. xRatio);
+                        }::outList)
 	        )
     |	[] -> outList
 ;;

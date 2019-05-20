@@ -98,15 +98,15 @@ SaveCharClip.saveNewFClip clip h (!name) (dir^(stringInt count)^".jsonf");
     | _ -> ()
 ;;
 
-let rec extractPages dir count pageList elementList=
-  match pageList,elementList with
-    pageHd::pageTl,[]::elemTl -> (extractPages dir (count+1) pageTl elemTl)
-  | pageHd::pageTl,elemHd::elemTl -> (
+let rec extractPages dir count pageList elementList= 
+        match pageList,elementList with 
+        pageHd::pageTl,[]::elemTl -> (extractPages dir (count+1) pageTl elemTl) 
+    | pageHd::pageTl,elemHd::elemTl -> (
              (* open the json created by ccl *)
 	     let jsondir = (dir^(stringInt count)^"/"^(!name)^"-"^(string_of_int count)^".json") in
 	     let clip = LoadClip.getClip jsondir in
-	     let aligned = Align.alignElems clip pageHd elemHd in
-	     let glyphs = Align.convertGlyphs clip.LoadClip.glyphs [] in
+	     let aligned = Align.alignElems clip pageHd elemHd in (* chars from pdf, scaled to match the image *)
+	     let glyphs = Align.convertGlyphs clip.LoadClip.glyphs [] in (* lines from the image *)
 	     let lines = LineFinder.findLines glyphs in
 	     let matched = matchLines lines aligned [] in
  	       saveClips clip matched 0 (dir^(stringInt count)^"/");
