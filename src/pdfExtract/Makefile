@@ -41,7 +41,6 @@ SOURCES=ascii.ml\
 	jsonfio.ml\
 	pdfextractor.ml\
 	contentparser.ml\
-	match.ml\
 	saveCharClip.ml\
 	lineFinder.ml\
 	align.ml\
