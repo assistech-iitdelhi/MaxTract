@@ -50,7 +50,7 @@ SOURCES=ascii.ml\
 
 # All Target Files, ordered with respect to their priority:
 
-TARGETS= extractElements.ml\
+TARGETS= extractElements.ml test.txt\
 
 # All Packages needed for making sources and targets
 
@@ -221,6 +221,9 @@ all:
 opt: 
 	make clean_native 
 	make opt_targets
+
+test:
+	./extractElements -t -f ../../samples/pdf/test.pdf -d /tmp/test > /tmp/test.txt
 
 all_targets: $(basename $(notdir $(TARGETS)))
 

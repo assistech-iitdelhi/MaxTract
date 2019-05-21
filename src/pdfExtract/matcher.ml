@@ -368,8 +368,8 @@ let rec getSingleGlyphs glyphs elems singles =
 let singlesMatch glyphs elems=
   let glyphs = getSingleGlyphs glyphs elems [] in
   let elems = getSingleElems glyphs elems [] in
-
-  let symbols = singleMatch [] elems glyphs 0.8 1.1 0.8 in
+                                         (* hGScale vScale hEScale *)
+  let symbols = singleMatch [] elems glyphs 0.8     1.1    0.8 in
     glyphLst := removeDupGlyphs (!glyphLst) symbols [];
     elemLst  := removeDupChars (!elemLst) symbols [];
 

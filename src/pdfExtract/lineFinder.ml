@@ -28,9 +28,9 @@ let rec getLines bottom glyphs curLine lines =
   match glyphs with
       [] -> (curLine::lines)
     | h::t  ->(
-	if (h.Jsonfio.JsonfIO.y) < bottom + lineTol
-	then getLines (max bottom (h.Jsonfio.JsonfIO.h + h.Jsonfio.JsonfIO.y)) t (h::curLine) lines
-	else getLines (h.Jsonfio.JsonfIO.y + h.Jsonfio.JsonfIO.h) t (h::[]) (curLine::lines)
+	if (h.Jsonfio.JsonfIO.y) < bottom + lineTol (* if the header glyph is above the current bottom within a tolerance *)
+	then getLines (max bottom (h.Jsonfio.JsonfIO.h + h.Jsonfio.JsonfIO.y)) t (h::curLine) lines (* attach to current line *)
+	else getLines (h.Jsonfio.JsonfIO.y + h.Jsonfio.JsonfIO.h) t (h::[]) (curLine::lines) (* start a new one *)
       )
 ;;
 

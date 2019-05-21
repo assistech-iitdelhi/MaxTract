@@ -74,7 +74,7 @@ let rec makeJson dir count =
  *)
 let rec matchLines lines chars matchedLines =
   match lines with
-     h::t -> (let matched = Matcher.makeSymbols h chars in
+     h::t -> (let matched = Matcher.makeSymbols h chars !test in
 		if matched = [] then matchLines t chars matchedLines
 		else  matchLines t (Matcher.removeDupChars chars matched [])
 		   ((Matcher.convert matched [])::matchedLines))
@@ -107,9 +107,9 @@ let rec extractPages dir count pageList elementList=
 	     let clip = LoadClip.getClip jsondir in
 	     let aligned = Align.alignElems clip pageHd elemHd in 	(* chars from pdf, scaled to match the image *)
 	     let glyphs = Align.convertGlyphs clip.LoadClip.glyphs [] in 
-	     let lines = LineFinder.findLines glyphs in			(* lines from the image *)
+	     let lines = LineFinder.findLines glyphs in			(* lines from the image based on y coordinates of glyphs *)
 	     let matched = matchLines lines aligned [] in
- 	       saveClips clip matched 0 (dir^(stringInt count)^"/");
+ 	       saveClips clip matched 0 (dir^(stringInt count)^"/");    (* save aligned symbols *)
 	       extractPages dir (count+1) pageTl elemTl 
 	   )
   | _,_ -> () 
@@ -135,7 +135,7 @@ let extractFile inFile inDirectory=
 		system ("./pdf2tiff "^(!file));
 		makeJson !dir ((List.length pageTree)-1););
 	  
-	  (* compare the json's *)
+	  (* compare the json with the characters from pdf *)
 	  extractPages !dir 0 (List.rev pageList) elements;
 	  
 	  ();

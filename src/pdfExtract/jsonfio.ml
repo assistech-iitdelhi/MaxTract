@@ -279,15 +279,3 @@ module JsonfIO = struct
       print_string (Json_io.string_of_json jsonClip)
 
 end
-
-
-(* For testing only: *)
-
-(* let x = JsonfIO.loadClip "tst.jsonf" *)
-
-(* let _= JsonfIO.saveClip "tstSave.jsonf" x *)
-
-(* let y = JsonfIO.loadClip "tstSave.jsonf" *)
-
-(* let _= JsonfIO.saveClip "tstSave2.jsonf" y *)
-
