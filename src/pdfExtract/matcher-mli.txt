@@ -1,0 +1,19 @@
+(* interface file for matcher.ml, requires manual steps so not integrated yet*)
+type symb = {
+  glList : Jsonfio.JsonfIO.bBox list;
+  elList : Contentparser.elem list;
+}
+
+val makeSymbols :
+  Jsonfio.JsonfIO.bBox list -> Contentparser.elem list -> symb list
+
+val removeDupGlyphs :
+  Jsonfio.JsonfIO.bBox list ->
+  symb list -> Jsonfio.JsonfIO.bBox list -> Jsonfio.JsonfIO.bBox list
+
+val removeDupChars :
+  Contentparser.elem list ->
+  symb list -> Contentparser.elem list -> Contentparser.elem list
+
+val convert :
+  symb list -> Jsonfio.JsonfIO.symbol list -> Jsonfio.JsonfIO.symbol list

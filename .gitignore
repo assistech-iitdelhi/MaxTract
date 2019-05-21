@@ -1,4 +1,6 @@
 *.cmi
+*.cmt
+*.annot
 *.cmo
 **/ccl
 **/linearizer
