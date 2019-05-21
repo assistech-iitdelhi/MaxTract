@@ -420,19 +420,20 @@ let rec rootMatch glyphs symbols =
     @effects: 
     @output:  
  *)
-let makeSymbols glyphs elems =
+let makeSymbols glyphs elems verbose=
 
   let bottom = findBottom glyphs 0 in
 
   elemLst :=  sortElemX (cutElems bottom elems []);
   glyphLst := sortGlyphX glyphs;
 
-  if (false)then (
+  if (verbose)then (
     print_endline ("Before Match");
     printGlyphs (!glyphLst);
     printElems (!elemLst);
   );
 
+  (* match (and remove) glyphs and elements from glyphLst and elemLst *)
   let roots = rootMatch (!glyphLst) [] in
   let singles = singlesMatch (!glyphLst) (!elemLst) in
   let bigGlyphs = bigGlyphMatch (!glyphLst) [] in
@@ -447,15 +448,14 @@ let makeSymbols glyphs elems =
 
   let lowers = lowerMatch (!elemLst) [] in
 
+  (* concatenate all the symbols together *)
   let symbols =  roots@singles@bigGlyphs@uppers@singles2@bigGlyphs2@singles3@bigGlyphs3@lowers in
 
   let symbols = getAbove symbols [] in
-      if (List.length (!glyphLst) <(-1))then(
 	print_endline ("After Match");
 	printGlyphs (!glyphLst);
 	printElems (!elemLst);
 	print_endline ("Next Line");
-      );
 symbols
 
 ;;
