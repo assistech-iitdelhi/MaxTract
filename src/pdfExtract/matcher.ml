@@ -435,18 +435,67 @@ let makeSymbols glyphs elems verbose=
 
   (* match (and remove) glyphs and elements from glyphLst and elemLst *)
   let roots = rootMatch (!glyphLst) [] in
+  if (verbose)then (
+    print_endline ("After rootMatch");
+    printGlyphs (!glyphLst);
+    printElems (!elemLst);
+  );
+
   let singles = singlesMatch (!glyphLst) (!elemLst) in
+  if (verbose)then (
+    print_endline ("After singlesMatch");
+    printGlyphs (!glyphLst);
+    printElems (!elemLst);
+  );
+
   let bigGlyphs = bigGlyphMatch (!glyphLst) [] in
+  if (verbose)then (
+    print_endline ("After bigGlyphMatch");
+    printGlyphs (!glyphLst);
+    printElems (!elemLst);
+  );
 
   let singles2 = singlesMatch (!glyphLst) (!elemLst) in
+  if (verbose)then (
+    print_endline ("After singlesMatch");
+    printGlyphs (!glyphLst);
+    printElems (!elemLst);
+  );
+
   let bigGlyphs2 = bigGlyphMatch (!glyphLst) [] in
+  if (verbose)then (
+    print_endline ("After bigGlyphMatch");
+    printGlyphs (!glyphLst);
+    printElems (!elemLst);
+  );
  
   let uppers =  upperMatch (!elemLst) []in
+  if (verbose)then (
+    print_endline ("After upperMatch");
+    printGlyphs (!glyphLst);
+    printElems (!elemLst);
+  );
 
   let singles3 = singlesMatch (!glyphLst) (!elemLst) in
+  if (verbose)then (
+    print_endline ("After singlesMatch");
+    printGlyphs (!glyphLst);
+    printElems (!elemLst);
+  );
+
   let bigGlyphs3 = bigGlyphMatch (!glyphLst) [] in
+  if (verbose)then (
+    print_endline ("After bigGlyphMatch");
+    printGlyphs (!glyphLst);
+    printElems (!elemLst);
+  );
 
   let lowers = lowerMatch (!elemLst) [] in
+  if (verbose)then (
+    print_endline ("After lowerMatch");
+    printGlyphs (!glyphLst);
+    printElems (!elemLst);
+  );
 
   (* concatenate all the symbols together *)
   let symbols =  roots@singles@bigGlyphs@uppers@singles2@bigGlyphs2@singles3@bigGlyphs3@lowers in

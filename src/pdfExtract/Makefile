@@ -146,7 +146,7 @@ space:= $(empty) $(empty)
 
 OCAMLFINDFLAGS=-package $(subst $(space),$(comma),$(PACKAGES))
 
-OCAMLFLAGS=$(OCAMLFINDFLAGS) $(INCLUDES) $(PREPROCESS)  # -custom unix.cma str.cma #    # add other options for ocamlc here
+OCAMLFLAGS=$(OCAMLFINDFLAGS) $(INCLUDES) $(PREPROCESS) -g # -custom unix.cma str.cma #    # add other options for ocamlc here
 OCAMLOPTFLAGS=$(OCAMLFINDFLAGS) $(INCLUDES) $(PREPROCESS) # -ccopt -static # unix.cmxa str.cmxa #  # add other options for ocamlopt here
 
 ## Docu Flags for our special generators
@@ -223,7 +223,7 @@ opt:
 	make opt_targets
 
 test:
-	./extractElements -t -f ../../samples/pdf/test.pdf -d /tmp/test > /tmp/test.txt
+	./extractElements -t -f ../../samples/pdf/test.pdf -d /tmp/test > test.txt
 
 all_targets: $(basename $(notdir $(TARGETS)))
 
