@@ -116,15 +116,11 @@ let rec sortGlyphsY = function
     @output:  True if first char's y is less than second
  *)
 let charLessY s1 s2 =
-  match s1 with
-      Ln  ln1 -> (
-	match s2 with 
-	    Ln  ln2 -> ln1.sty < ln2.sty || ln1.sty = ln2.sty && ln1.stx <ln2.stx 
-	  | Chr ch2 -> ln1.sty < ch2.chy || ln1.sty = ch2.chy && ln1.stx <ch2.chx)
-    | Chr ch1 -> (
-	match s2 with 
-	    Ln  ln2 -> ch1.chy < ln2.sty || ch1.chy = ln2.sty && ch1.chx < ln2.stx 
-	  | Chr ch2 -> ch1.chy < ch2.chy || ch1.chy = ch2.chy && ch1.chx <ch2.chx)
+  match s1, s2 with
+      Ln ln1,  Ln  ln2 -> (ln1.sty < ln2.sty || ln1.sty = ln2.sty && ln1.stx < ln2.stx) 
+    | Ln ln1,  Chr ch2 -> (ln1.sty < ch2.chy || ln1.sty = ch2.chy && ln1.stx < ch2.chx)
+    | Chr ch1, Ln  ln2 -> (ch1.chy < ln2.sty || ch1.chy = ln2.sty && ch1.chx < ln2.stx) 
+    | Chr ch1, Chr ch2 -> (ch1.chy < ch2.chy || ch1.chy = ch2.chy && ch1.chx < ch2.chx)
 ;;
 
 (** 
@@ -150,15 +146,11 @@ let rec sortCharY = function
     @output:  true if char1. x is less than char2.x
  *)
 let charLessX s1 s2 =
-  match s1 with
-      Ln  ln1 -> (
-	match s2 with
-	    Ln  ln2 ->ln1.stx < ln2.stx || ln1.stx = ln2.stx && ln1.sty <=ln2.sty 
-	  | Chr ch2 ->ln1.stx < ch2.chx || ln1.stx = ch2.chx && ln1.sty <=ch2.chy)
-    | Chr ch1 -> (
-	match s2 with
-	    Ln  ln2 -> ch1.chx < ln2.stx || ch1.chx = ln2.stx && ch1.chy <=ln2.sty 	
-	  | Chr ch2 -> ch1.chx < ch2.chx || ch1.chx = ch2.chx && ch1.chy <=ch2.chy)
+  match s1, s2 with
+	    Ln ln1,  Ln  ln2 -> (ln1.stx < ln2.stx || ln1.stx = ln2.stx && ln1.sty <= ln2.sty) 
+	  | Ln ln1,  Chr ch2 -> (ln1.stx < ch2.chx || ln1.stx = ch2.chx && ln1.sty <= ch2.chy)
+          | Chr ch1, Ln  ln2 -> (ch1.chx < ln2.stx || ch1.chx = ln2.stx && ch1.chy <= ln2.sty) 	
+	  | Chr ch1, Chr ch2 -> (ch1.chx < ch2.chx || ch1.chx = ch2.chx && ch1.chy <= ch2.chy)
 ;;
 
 
