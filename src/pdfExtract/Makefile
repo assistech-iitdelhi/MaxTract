@@ -46,7 +46,7 @@ SOURCES=ascii.ml\
 	align.ml\
 	matcherUtility.ml\
 	matcher.ml\
-	pdftest.ml\
+	#pdftest.ml\
 
 # All Target Files, ordered with respect to their priority:
 
@@ -339,7 +339,7 @@ clean_objs:
 	rm -f $(addsuffix .mli,$(basename $(filter %.mly,$(SOURCES))))
 
 clean_byte: clean_objs
-	rm -f $(basename $(notdir $(TARGETS)))
+	#rm -f $(basename $(notdir $(TARGETS)))
 
 clean_native: clean_objs
 	rm -f $(addsuffix .opt,$(basename $(notdir $(TARGETS))))
