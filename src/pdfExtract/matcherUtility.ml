@@ -65,12 +65,7 @@ let rec printChars charList =
     @output:  True if first glyph's x is less than second
  *)
 let glyphLessX s1 s2 =
-  if s1.x < s2.x then true
-  else (if (s1.x = s2.x) 
-	then (
-	  if s1.y <s2.y then true
-	  else false)
-	else false)
+  s1.x < s2.x || s1.x = s2.x && s1.y < s2.y
 ;;
 
 (** 
@@ -95,9 +90,7 @@ let rec sortGlyphX = function
     @effects: 
     @output:  true if first glyph's y is less than second's y
  *)
-let glyphLessY s1 s2 =
-  if s1.y < s2.y then true
-  else false
+let glyphLessY s1 s2 = s1.y < s2.y
 ;;
 
 (** 
@@ -124,44 +117,14 @@ let rec sortGlyphsY = function
  *)
 let charLessY s1 s2 =
   match s1 with
-      Ln  ln1 ->(
-	match s2 with
-	    Ln  ln2 ->( 
-	      if ln1.sty < ln2.sty then true
-	      else (if (ln1.sty = ln2.sty) 
-		    then (
-		      if ln1.stx <ln2.stx then true
-		      else false)
-		    else false) 
-	    )
-	  | Chr ch2 ->(
-	      if ln1.sty < ch2.chy then true
-	      else (if (ln1.sty = ch2.chy) 
-		    then (
-		      if ln1.stx <ch2.chx then true
-		      else false)
-		    else false)
-	    )
-      )
-    | Chr ch1 ->(
-	match s2 with
-	    Ln  ln2 ->(
-	      if ch1.chy < ln2.sty then true
-	      else (if (ch1.chy = ln2.sty) 
-		    then (
-		      if ch1.chx <ln2.stx then true
-		      else false)
-		    else false)	
-	    )
-	  | Chr ch2 ->(
-	      if ch1.chy < ch2.chy then true
-	      else (if (ch1.chy = ch2.chy) 
-		    then (
-		      if ch1.chx <ch2.chx then true
-		      else false)
-		    else false)	    
-	    )
-      )
+      Ln  ln1 -> (
+	match s2 with 
+	    Ln  ln2 -> ln1.sty < ln2.sty || ln1.sty = ln2.sty && ln1.stx <ln2.stx 
+	  | Chr ch2 -> ln1.sty < ch2.chy || ln1.sty = ch2.chy && ln1.stx <ch2.chx)
+    | Chr ch1 -> (
+	match s2 with 
+	    Ln  ln2 -> ch1.chy < ln2.sty || ch1.chy = ln2.sty && ch1.chx < ln2.stx 
+	  | Chr ch2 -> ch1.chy < ch2.chy || ch1.chy = ch2.chy && ch1.chx <ch2.chx)
 ;;
 
 (** 
@@ -188,44 +151,14 @@ let rec sortCharY = function
  *)
 let charLessX s1 s2 =
   match s1 with
-      Ln  ln1 ->(
+      Ln  ln1 -> (
 	match s2 with
-	    Ln  ln2 ->( 
-	      if ln1.stx < ln2.stx then true
-	      else (if (ln1.stx = ln2.stx) 
-		    then (
-		      if ln1.sty <=ln2.sty then true
-		      else false)
-		    else false) 
-	    )
-	  | Chr ch2 ->(
-	      if ln1.stx < ch2.chx then true
-	      else (if (ln1.stx = ch2.chx) 
-		    then (
-		      if ln1.sty <=ch2.chy then true
-		      else false)
-		    else false)
-	    )
-      )
-    | Chr ch1 ->(
+	    Ln  ln2 ->ln1.stx < ln2.stx || ln1.stx = ln2.stx && ln1.sty <=ln2.sty 
+	  | Chr ch2 ->ln1.stx < ch2.chx || ln1.stx = ch2.chx && ln1.sty <=ch2.chy)
+    | Chr ch1 -> (
 	match s2 with
-	    Ln  ln2 ->(
-	      if ch1.chx < ln2.stx then true
-	      else (if (ch1.chx = ln2.stx) 
-		    then (
-		      if ch1.chy <=ln2.sty then true
-		      else false)
-		    else false)	
-	    )
-	  | Chr ch2 ->(
-	      if ch1.chx < ch2.chx then true
-	      else (if (ch1.chx = ch2.chx) 
-		    then (
-		      if ch1.chy <=ch2.chy then true
-		      else false)
-		    else false)	    
-	    )
-      )
+	    Ln  ln2 -> ch1.chx < ln2.stx || ch1.chx = ln2.stx && ch1.chy <=ln2.sty 	
+	  | Chr ch2 -> ch1.chx < ch2.chx || ch1.chx = ch2.chx && ch1.chy <=ch2.chy)
 ;;
 
 
@@ -294,7 +227,6 @@ let glyphElemOverlapX glyph elem eScale gScale=
 	Chr chr ->( let eL = chr.chx in
 		    let eR = eL +. (chr.chw *. eScale) in
 		    let eL = eL +. (chr.chw *. (1.-.eScale)) in
-	(*	    let eR = eL +. chr.chw in*)
 		      (((eL >= gL) && (eL <= gR)) || 
 			 ((eR >= gL) && (eR <= gR)) ||
 			 ((gL >= eL) && (gL <= eR)) || 
@@ -324,8 +256,6 @@ let glyphElemOverlapY glyph elem scale=
       | Ln ln   ->( let e = ln.sty in
 		      ((e >= gT) && (e <= gB)) )
 ;;
-
-
 
 
 (** 
@@ -392,7 +322,7 @@ let rec getLeftRoot glyph elems root=
 (** 
     @edited:  17-JUL-2012
     @author:  Josef Baker
-    @input:   glyph and is of elements
+    @input:   glyph and list of elements
     @effects: 
     @output:  highest line enclosed in the glyph
  *)
