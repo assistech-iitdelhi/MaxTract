@@ -222,8 +222,9 @@ opt:
 	make clean_native 
 	make opt_targets
 
-test:	extractElements ../../samples/pdf/test.pdf
-	./extractElements -t -f ../../samples/pdf/test.pdf -d /tmp/test > ../../samples/pdf/test.txt
+test:	extractElements
+	./extractElements -f ../../samples/pdf/AM-044-2008-1-4.pdf -d ../../samples/json/AM-044-2008-1-4
+	diff -x*.tif -qr ../../samples/json/AM-044-2008-1-4/ ../../../TheMaxTract/samples/json/AM-044-2008-1-4/
 
 sqrt:	extractElements ../../samples/pdf/sqrt.pdf
 	./extractElements -t -f ../../samples/pdf/sqrt.pdf -d /tmp/sqrt > ../../samples/pdf/sqrt.txt

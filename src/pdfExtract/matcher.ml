@@ -500,10 +500,12 @@ let makeSymbols glyphs elems verbose=
   let symbols =  roots@singles@bigGlyphs@uppers@singles2@bigGlyphs2@singles3@bigGlyphs3@lowers in
 
   let symbols = getAbove symbols [] in
+  if (verbose)then (
 	print_endline ("After Match");
 	printGlyphs (!glyphLst);
 	printElems (!elemLst);
 	print_endline ("Next Line");
+  );
 symbols
 
 ;;
