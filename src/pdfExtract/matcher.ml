@@ -98,13 +98,12 @@ let rec removeDupGlyphs glyphs symbols symbolGlyphs =
 
 let rec convElems elems out =
   match elems with
-      h::t ->(match h with 
-		  Chr chr -> convElems t (PDFChar {Jsonfio.JsonfIO.c=chr.chname;
+      Chr chr::t ->(convElems t (PDFChar {Jsonfio.JsonfIO.c=chr.chname;
 						   bx=(int_of_float chr.chx);
 						   by=(int_of_float chr.chy);
 						   font=chr.chfont;
-						   scale=chr.chsize;}::out)
-		| Ln ln -> convElems t (Line {sx=(int_of_float ln.stx);
+						   scale=chr.chsize;}::out))
+    | Ln ln::t -> (convElems t (Line {sx=(int_of_float ln.stx);
 					      sy=(int_of_float ln.sty);
 					      lw=(int_of_float ln.lnw);
 					      ex=(int_of_float ln.enx);
