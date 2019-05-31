@@ -19,7 +19,7 @@ for glyph in json['glyphs']:
     w = glyph['w']
     x = glyph['x']
     y = glyph['y']
-    img[y+np.arange(h), x] = [0, 0, 0]
-    img[y, x+np.arange(w)] = [0, 0, 0]
+    img[y+np.arange(h), x] = [255, 0, 0]
+    img[y, x+np.arange(w)] = [255, 0, 0]
 
 cv2.imwrite(sys.argv[3], img)
