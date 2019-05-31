@@ -105,7 +105,7 @@ let rec extractPages dir count pageList elementList=
              (* open the json created by ccl *)
 	     let jsondir = (dir^(stringInt count)^"/"^(!name)^"-"^(string_of_int count)^".json") in
 	     let clip = LoadClip.getClip jsondir in
-	     let aligned = Align.alignElems clip pageHd elemHd in 	(* chars from pdf, scaled to match the image *)
+	     let aligned = Align.alignElems clip pageHd elemHd in 	(* scale chars from pdf to match the image *)
 	     let glyphs = Align.convertGlyphs clip.LoadClip.glyphs [] in 
 	     let lines = LineFinder.findLines glyphs in			(* lines from the image based on y coordinates of glyphs *)
 	     let matched = matchLines lines aligned [] in
@@ -135,7 +135,7 @@ let extractFile inFile inDirectory=
 		system ("./pdf2tiff "^(!file));
 		makeJson !dir ((List.length pageTree)-1););
 	  
-	  (* compare the json with the characters from pdf *)
+	  (* compare the json with the characters/lines from pdf *)
 	  extractPages !dir 0 (List.rev pageList) elements;
 	  
 	  ();
