@@ -49,107 +49,8 @@ let mergeSynt s1 s2 =
   {name=mname; font=mfont;size=msize;
  Synt.x1=mx1; Synt.x2=mx2; Synt.x3=mx3; Synt.y1=my1; Synt.y2=my2; Synt.y3=my3;}
 ;;
-(*
-
-(** 
-    @edited:  14-FEB-2010
-    @author:  Josef Baker
-    @input:   
-    @effects: 
-    @output:  
- *)
-let rec hasRightGroup synt list index =
-  match list with
-      [] -> -1
-    | h::t -> (
-	  if (((h.font = synt.font) && (h.y2 = synt.y2) &&  ((h.x1 - synt.x3)<hTol)) && 
-		(((isChar h.name) && (isChar synt.name)) || ((isNum h.name)&&(isNum synt.name)))) then (index +1)
-	  else hasRightGroup synt t (index+1))
-;;
 
 
-
-(** 
-    @edited:  14-FEB-2010
-    @author:  Josef Baker
-    @input:   
-    @effects: 
-    @output:  
- *)
-let rec group inList outList =
-  match inList with
-      [] -> outList
-    | h::t ->(
-	let second = hasRightGroup h t 0 in
-	  if (second = -1) then group t (h::outList)
-	  else(                   
-	    let str = mergeSynt h (List.nth  inList second) in
-	    let inList2 = (Synt.delete inList second) in
-	      group (str::(List.tl inList2)) outList))
-;; 
-
-
-
-
-let rec removeGroup inSynts group outSynts count =
-  match group,inSynts with
-      grouphd::grouptl,synthd::synttl when grouphd=count 
-	-> removeGroup synttl grouptl outSynts (count+1)
-    | grouphd::grouptl,synthd::synttl 
-	-> removeGroup synttl group (synthd::outSynts) (count+1)
-    | [],synthd::synttl -> removeGroup synttl group (synthd::outSynts) (count+1)
-    | [],[] -> List.rev outSynts
-;;
-
-let rec makeGroup inSynts group outSynt count =
-  match group,inSynts with
-      grouphd::grouptl,synthd::synttl when grouphd=count 
-	-> makeGroup synttl grouptl (mergeSynt outSynt synthd )(count+1)    
-    | grouphd::grouptl,synthd::synttl -> makeGroup synttl group outSynt (count+1)
-    | [],_ ->outSynt 
-
-(** 
-    @edited:  13-AUG-2012
-    @author:  Josef Baker
-    @input:   
-    @effects: 
-    @output:  
- *)
-let rec getAlphaNumGroup synt syntList group index=
-  match syntList with
-      [] -> List.rev group
-    | h::t when (h.font = synt.font) && (h.y2 = synt.y2) && 
-	
-	(((float_of_int (h.x1-synt.x3))
-	  /.
-	  ((float_of_int (h.x3-h.x1 + synt.x3-synt.x1))/.2.0))
-	   
-	   
-	 <=0.3) &&
-	(isSameType synt.name h.name)
-	-> (
-	  getAlphaNumGroup h t (index::group) (index+1))
-    | h::t when (syntsVOverlap synt h) -> List.rev group
-    | h::t ->(
-	getAlphaNumGroup synt t group (index+1))
-
-(** 
-    @edited:  13-AUG-2012
-    @author:  Josef Baker
-    @input:   input list of synts, initially empty output list
-    @effects: 
-    @output:  
- *)
-let rec groupAlphaNum inSynts outSynts =
-  match inSynts with
-      [] -> outSynts
-    | h::t -> (let group = getAlphaNumGroup h t [0] 1 in
-	       let inSynts = sortSynt (removeGroup inSynts group [] 0) in
-(*Util.printSyntList (sortSynt inSynts);*)
-	       let outSynts = ((makeGroup t (List.tl group) h 1)::outSynts) in
-		 groupAlphaNum  inSynts outSynts)
-
-	*)
 (** 
     @edited:  06-FEB-2010
     @author:  Josef Baker
@@ -323,10 +224,6 @@ let rec group syntList grouped =
 let preprocess symbolList =
 
   let syntList = symbol2synt symbolList [] in
-(*Util.printSyntList (sortSynt syntList);*)
- (* let syntList =  sortSynt (groupAlphaNum (sortSynt syntList) [])  in*)
-(*Util.printSyntList (syntList);*)
 let syntList =  sortSynt (group (sortSynt syntList) [])  in
-(*Util.printSyntList (syntList);*)
 syntList
 ;;

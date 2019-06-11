@@ -8,7 +8,7 @@ import sys
 import pdb
 
 if len(sys.argv) < 4:
-    print("Usage: python {} <input-image-file> <json-file> <output-image-file>".format(sys.argv[0]))
+    print("Usage: python {} <input-image-file> <connected-components-from-MaxTract-in-json> <output-image-file>".format(sys.argv[0]))
     sys.exit(1)
 
 img  = cv2.imread(sys.argv[1])
