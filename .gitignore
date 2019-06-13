@@ -1,7 +1,12 @@
 *.cmi
+*.aux
+*.dvi
+*.tif
+*.log
 *.cmt
 *.annot
 *.cmo
 **/ccl
 **/linearizer
 **/extractElements
+samples/json

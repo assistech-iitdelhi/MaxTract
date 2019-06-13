@@ -229,6 +229,9 @@ test:	extractElements
 sqrt:	extractElements ../../samples/pdf/sqrt.pdf
 	./extractElements -t -f ../../samples/pdf/sqrt.pdf -d /tmp/sqrt > ../../samples/pdf/sqrt.txt
 
+pow:	extractElements ../../samples/pdf/pow.pdf
+	./extractElements -t -f ../../samples/pdf/pow.pdf -d /tmp/pow > ../../samples/pdf/pow.txt
+
 ../../samples/pdf/sqrt.pdf: ../../samples/pdf/sqrt.tex
 	pdflatex ../../samples/pdf/sqrt.tex
 
