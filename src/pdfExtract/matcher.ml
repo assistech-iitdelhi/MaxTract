@@ -248,7 +248,7 @@ let rec upperMatch elems symbols =
 (** glyph contains muliple elems
     @edited:  17-JUL-2012
     @author:  Josef Baker
-    @input:   
+    @input:  e.g. a square root glyph overlaps the square root symbol and the horizontal line 
     @effects: 
     @output:  
  *)

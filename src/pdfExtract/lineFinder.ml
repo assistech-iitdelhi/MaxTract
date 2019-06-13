@@ -46,6 +46,6 @@ let findLines glyphs =
   let glyphs = List.rev (sortGlyphY glyphs) in
     match glyphs with
 	[] -> []
-      | h::t -> List.rev( getLines  (h.Jsonfio.JsonfIO.y + h.Jsonfio.JsonfIO.h) t (h::[]) []	
+      | h::t -> List.rev( getLines  (h.Jsonfio.JsonfIO.y + h.Jsonfio.JsonfIO.h) t (h::[]) [] (* The glyphs are already sorted by their y coordinates *)
 	)
 ;;
