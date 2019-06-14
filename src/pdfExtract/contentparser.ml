@@ -598,12 +598,14 @@ let rec streamReader fonts output graphicStack linePoints=
 let rec printLines elems = 
   match elems with
       Chr chr::t -> (printLines t;)
-    | Ln ln::t   -> (print_string "line";
-			print_string ",";
-			print_float ln.stx;
+    | Ln ln::t   -> (	print_float ln.stx;
 			print_string ",";
 			print_float ln.sty;
-			print_string ":";
+			print_string ",";
+			print_float ln.enx;
+			print_string ",";
+			print_float ln.eny;
+                        print_string "\n";
 			printLines t;)
     | [] -> print_string ("\n\n");
 ;;
