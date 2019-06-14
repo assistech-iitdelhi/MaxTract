@@ -6,6 +6,7 @@ let name = ref ""
 let test = ref false
 let uncomp = ref false
 let print = ref false
+let plines = ref false
 let directory = ref ""
 let jsondir = ref ""
 
@@ -128,15 +129,16 @@ let extractFile inFile inDirectory=
 	let pageTree = Pdfextractor.getPageTree inCh !test in
 	  let pageList = Pdfextractor.extractPDF inCh pageTree [] in
 	    close_in inCh;
-	    let elements = Contentparser.parse pageList [] !print in
-	      
+	    let elements = Contentparser.parse pageList [] !print !plines in
+
 	      (* run pdf2tiff followed by ccl to get json from pdf's image *)
-	      if (!jsondir) = "" then(	    
+	      if (!jsondir) = "" && not !plines then(	    
 		system ("./pdf2tiff "^(!file));
 		makeJson !dir ((List.length pageTree)-1););
 	  
+          if not !plines then(
 	  (* compare the json with the characters/lines from pdf *)
-	  extractPages !dir 0 (List.rev pageList) elements;
+	  extractPages !dir 0 (List.rev pageList) elements);
 	  
 	  ();
     )
@@ -152,6 +154,7 @@ let speclist = [
   ("-t", Arg.Set test, ": -t Set verbose mode on");
   ("-p", Arg.Set print, ": -p Print output to sdout");
   ("-j", Arg.Set_string jsondir, ": -j Name of json directory");
+  ("-l", Arg.Set plines, ": -l Print lines in pdf and exit");
 ]
 in
   (* Read the arguments *)

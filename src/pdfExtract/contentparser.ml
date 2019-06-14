@@ -595,6 +595,19 @@ let rec streamReader fonts output graphicStack linePoints=
     streamReader fonts output graphicStack linePoints)
 ;;
 
+let rec printLines elems = 
+  match elems with
+      Chr chr::t -> (printLines t;)
+    | Ln ln::t   -> (print_string "line";
+			print_string ",";
+			print_float ln.stx;
+			print_string ",";
+			print_float ln.sty;
+			print_string ":";
+			printLines t;)
+    | [] -> print_string ("\n\n");
+;;
+
 let rec printElems elems =
   match elems with
       Chr chr::t -> (print_string chr.chname; 
@@ -613,7 +626,7 @@ let rec printElems elems =
 			printElems t;)
     | [] -> print_string ("\n\n");
 ;;
-let rec parse pageList elemLists test =
+let rec parse pageList elemLists test plines=
 
 
 
@@ -638,7 +651,8 @@ ctMatrix := {a=1.0;b=0.0;c=0.0;d=1.0;e=0.0;f=0.0};
 contents := h.Pdfextractor.contents;
 	       let elems = (List.rev ( streamReader h.Pdfextractor.fonts [] [] [])) in
 		 if (!verbose) then printElems elems;
-		 parse t (elems::elemLists) test;
+                 if plines then printLines elems;
+		 parse t (elems::elemLists) test plines;
 	      )
     | _ -> (elemLists)
 ;;
