@@ -1,4 +1,5 @@
 open Pdfextractor;;
+open Printf
 
 (*For testing*)
 let verbose = ref false
@@ -95,7 +96,39 @@ let rec getFontFamily fonts font =
   else getFontFamily (List.tl fonts) font
 ;;
  
+let rec printLines elems = 
+  match elems with
+      Chr chr::t -> (printLines t;)
+    | Ln ln::t   -> (	print_float ln.stx;
+			print_string ",";
+			print_float ln.sty;
+			print_string ",";
+			print_float ln.enx;
+			print_string ",";
+			print_float ln.eny;
+                        print_string "\n";
+			printLines t;)
+    | [] -> print_string ("\n\n");
+;;
 
+let rec printElems elems =
+  match elems with
+      Chr chr::t -> (print_string chr.chname; 
+			print_string ",";
+			print_float chr.chx;
+			print_string ",";
+			print_float chr.chy;
+			print_string ":";
+			printElems t;)
+    | Ln ln::t   -> (print_string "line";
+			print_string ",";
+			print_float ln.stx;
+			print_string ",";
+			print_float ln.sty;
+			print_string ":";
+			printElems t;)
+    | [] -> print_string ("\n\n");
+;;
 
 (** 
     @edited:  26-MAY-2010
@@ -492,7 +525,7 @@ contents := Str.string_after (!contents) ((Str.match_end ()));
 ;;
 
 let rec streamReader fonts output graphicStack linePoints=
-(*print_string "!";*)
+        printElems output;
   (*Empty stream*)
   if String.length (!contents) = 0 
   then (output)
@@ -547,19 +580,19 @@ let rec streamReader fonts output graphicStack linePoints=
 	  contents := Str.string_after (!contents) (Str.match_end ());
 	  streamReader fonts output graphicStack linePoints
   )
-  else if (Str.string_match (Str.regexp "[0-9]+\\.?[0-9]* +[0-9]+\\.?[0-9]* +m") (!contents) 0) 
+  else if (Str.string_match (Str.regexp "-?[0-9]+\\.?[0-9]* +[0-9]+\\.?[0-9]* +m") (!contents) 0) 
   then ( 
     match (Str.split (Str.regexp " +") (Str.matched_string (!contents))) with 
 	x::y::"m"::[] -> (
-	  Str.string_match (Str.regexp "[0-9]+\\.?[0-9]* +[0-9]+\\.?[0-9]* +m") (!contents) 0);
+	  Str.string_match (Str.regexp "-?[0-9]+\\.?[0-9]* +[0-9]+\\.?[0-9]* +m") (!contents) 0);
 	  contents := Str.string_after (!contents) (Str.match_end ());
 	  streamReader fonts output graphicStack ((float_of_string y)::(float_of_string x)::[])
   )
-  else if (Str.string_match (Str.regexp "[0-9]+\\.?[0-9]* +[0-9]+\\.?[0-9]* +l") (!contents) 0) 
+  else if (Str.string_match (Str.regexp "-?[0-9]+\\.?[0-9]* +[0-9]+\\.?[0-9]* +l") (!contents) 0) 
   then ( 
     match (Str.split (Str.regexp " +") (Str.matched_string (!contents))) with 
 	x::y::"l"::[] -> (
-	  Str.string_match (Str.regexp "[0-9]+\\.?[0-9]* +[0-9]+\\.?[0-9]* +l") (!contents) 0);
+	  Str.string_match (Str.regexp "-?[0-9]+\\.?[0-9]* +[0-9]+\\.?[0-9]* +l") (!contents) 0);
 	  contents := Str.string_after (!contents) (Str.match_end ());
 	  streamReader fonts output graphicStack ((float_of_string y)::(float_of_string x)::linePoints)
   )
@@ -584,6 +617,7 @@ let rec streamReader fonts output graphicStack linePoints=
 (*Line painting operators*)
   else if (Str.string_match (Str.regexp "S\\|B\\|b") (!contents) 0)
   then (
+    List.iter(printf "%f ") linePoints; 
     contents := Str.string_after (!contents) (Str.match_end ());
     if (List.length linePoints) > 3 then
       streamReader fonts ((makeLine (List.rev linePoints))::output) graphicStack linePoints
@@ -595,39 +629,6 @@ let rec streamReader fonts output graphicStack linePoints=
     streamReader fonts output graphicStack linePoints)
 ;;
 
-let rec printLines elems = 
-  match elems with
-      Chr chr::t -> (printLines t;)
-    | Ln ln::t   -> (	print_float ln.stx;
-			print_string ",";
-			print_float ln.sty;
-			print_string ",";
-			print_float ln.enx;
-			print_string ",";
-			print_float ln.eny;
-                        print_string "\n";
-			printLines t;)
-    | [] -> print_string ("\n\n");
-;;
-
-let rec printElems elems =
-  match elems with
-      Chr chr::t -> (print_string chr.chname; 
-			print_string ",";
-			print_float chr.chx;
-			print_string ",";
-			print_float chr.chy;
-			print_string ":";
-			printElems t;)
-    | Ln ln::t   -> (print_string "line";
-			print_string ",";
-			print_float ln.stx;
-			print_string ",";
-			print_float ln.sty;
-			print_string ":";
-			printElems t;)
-    | [] -> print_string ("\n\n");
-;;
 let rec parse pageList elemLists test plines=
 
 
