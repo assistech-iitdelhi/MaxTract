@@ -589,7 +589,7 @@ let rec streamReader fonts output graphicStack linePoints=
 	  streamReader fonts output graphicStack ((float_of_string y)::(float_of_string x)::[])
   )
   else if (Str.string_match (Str.regexp "-?[0-9]+\\.?[0-9]* +[0-9]+\\.?[0-9]* +l") (!contents) 0) 
-  then ( 
+  then   ( 
     match (Str.split (Str.regexp " +") (Str.matched_string (!contents))) with 
 	x::y::"l"::[] -> (
 	  Str.string_match (Str.regexp "-?[0-9]+\\.?[0-9]* +[0-9]+\\.?[0-9]* +l") (!contents) 0);
