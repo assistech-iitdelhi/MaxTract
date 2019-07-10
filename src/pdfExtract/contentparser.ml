@@ -38,6 +38,16 @@ type elem =
 
 
 
+let printMatrix m =
+  print_float m.a;print_char ',';
+    print_float m.b;print_char ',';
+    print_float m.c;print_char ',';
+    print_float m.d;print_char ',';
+    print_float m.e;print_char ',';
+    print_float m.f;print_char ',';
+print_newline ();
+
+;;
 (** 
     @edited:  28-FEB-2012
     @author:  Josef Baker
@@ -54,24 +64,6 @@ let matrixX m1 m2 =
    f= ((m1.e*.m2.b)+.(m1.f*.m2.d)+.(m2.f))}
 ;;
 
-let matrixXtd x y m =
-  {a= m.a;
-   b= m.b;
-   c= m.c;
-   d= m.d;
-   e= ((m.a*.x)+.(m.c*.y)+.(m.e));
-   f= ((m.b*.x)+.(m.d*.y)+.(m.f))}
-;;
-
-let printMatrix m =
-  print_float m.a;print_char ',';
-    print_float m.b;print_char ',';
-    print_float m.c;print_char ',';
-    print_float m.d;print_char ',';
-    print_float m.e;print_char ',';
-    print_float m.f;print_char ',';
-print_newline ();
-;;
 (** 
     @edited:  16-JUN-2009
     @author:  Josef Baker
@@ -138,7 +130,6 @@ let rec printElems elems =
     @output:  Character and attributes
  *)
 let makeChar fonts code space=
-(*print_string  (Str.string_after ((List.nth (getFont fonts !font) code).cname) 1);*)
   let tx = ((-.(space)) *. (!size) +. (!charSpace) +. (!wordSpace)) *. ((!scale)/.100./.1000.) in
     textMatrix := matrixX {a=1.0;b=0.0;c=0.0;d=1.0;e=tx;f=0.0} (!textMatrix);
 
@@ -193,7 +184,13 @@ let rec makeLineAux pointsList left right top bottom =
  *)
 let makeLine pointsList=
   match pointsList with
-      x1::y1::x2::y2::t -> makeLineAux t (min x1 x2) (max x1 x2) (max y1 y2) (min y1 y2)
+      x1::y1::x2::y2::t -> let cm = !ctMatrix in  
+                        List.iter(printf "%f ") pointsList; 
+                        Ln {    stx = cm.a*.x1 +. cm.c*.y1 +. cm.e;
+                                sty = cm.b*.x1 +. cm.d*.y1 +. cm.f;
+                                enx = cm.a*.x2 +. cm.c*.y2 +. cm.e;
+                                eny = cm.b*.y2 +. cm.d*.y2 +. cm.f;
+                                lnw = !lineWidth;}
 ;;
 
 
@@ -263,7 +260,6 @@ let makeDecChar fonts space=
     @output:  
  *)
 let rec parseStringAux fonts output space= 
-(*print_endline ("2"^(!contents));*)
   let first = String.get (!contents) 0 in
  
   contents := (Str.string_after (!contents) 1);
@@ -412,7 +408,7 @@ contents := Str.string_after (!contents) ((Str.match_end ()));
 			     btReader fonts output))
 
   else if (Str.string_match (Str.regexp "/[A-Z][0-9]+ +[0-9]+\\.?[0-9]* +Tf") (!contents) 0) 
-  then ((*print_string " Tf  ";*)
+  then (
 	match (Str.split (Str.regexp " +") (Str.matched_string (!contents))) with 
 	    f::s::"Tf"::[] -> (font := (Str.string_after f 1);
 			       size := (float_of_string s);
@@ -435,7 +431,7 @@ contents := Str.string_after (!contents) ((Str.match_end ()));
 
  (*Text positioning operators*)
   else if (Str.string_match (Str.regexp "-?[0-9]+\\.?[0-9]* +-?[0-9]+\\.?[0-9]* +Td") (!contents) 0) 
-  then ((*print_string "Td ";*)
+  then (
 	match (Str.split (Str.regexp " +") (Str.matched_string (!contents))) with 
 	    tx::ty::"Td"::[] -> (
 
@@ -451,7 +447,7 @@ contents := Str.string_after (!contents) ((Str.match_end ()));
 				   btReader fonts output))
 
   else if (Str.string_match (Str.regexp "-?[0-9]+\\.?[0-9]* +-?[0-9]+\\.?[0-9]* +TD") (!contents) 0) 
-  then ((*print_string "TD ";*)
+  then (
 	match (Str.split (Str.regexp " +") (Str.matched_string (!contents))) with 
 	    tx::ty::"TD"::[] -> (leading := (-.(float_of_string ty));
 				let transMatrix = {a=1.0;b=0.0;c=0.0;d=1.0;
@@ -465,7 +461,7 @@ contents := Str.string_after (!contents) ((Str.match_end ()));
     
   else if (Str.string_match (Str.regexp "-?[0-9]+\\.?[0-9]* +-?[0-9]+\\.?[0-9]* +-?[0-9]+\\.?[0-9]* +-?[0-9]+\\.?[0-9]* +-?[0-9]+\\.?[0-9]* +-?[0-9]+\\.?[0-9]* +Tm")
 	     (!contents) 0)  
-  then ((*print_string "Tm ";*)
+  then (
 	match (Str.split (Str.regexp " +") (Str.matched_string (!contents))) with 
 	    ta::tb::tc::td::te::tf::"Tm"::[] -> 
 	      (textMatrix := {a = (float_of_string ta);
@@ -510,11 +506,11 @@ contents := Str.string_after (!contents) ((Str.match_end ()));
 				 btReader fonts output;))
        
      else if (String.get (!contents) 0) = '('
-     then ((*print_string "Tj?";*)
+     then (
        btReader fonts ( parseString fonts output (getShowOperator (!contents)) 0. ))
 	 
      else if (String.get (!contents) 0) = '['
-     then  ((* print_string "TJ ";*)
+     then  (
        let op = parseString fonts output "TJ" 0. in
 	 btReader fonts op)
   
@@ -557,13 +553,13 @@ let rec streamReader fonts output graphicStack linePoints=
 	       streamReader fonts output graphicStack linePoints))
 
   (*Graphic state operators*)
-  else if (Str.string_match (Str.regexp "q") (!contents) 0)
+  else if (Str.string_match (Str.regexp "q") (!contents) 0) (* save graphics state *)
   then (
     contents := Str.string_after (!contents) (Str.match_end ());
     let currentctMatrix = !ctMatrix in
     streamReader fonts output (currentctMatrix::graphicStack) linePoints
   )
-  else if (Str.string_match (Str.regexp "Q") (!contents) 0)
+  else if (Str.string_match (Str.regexp "Q") (!contents) 0) (* restore graphics state *)
   then (
     contents := Str.string_after (!contents) (Str.match_end ());
     ctMatrix := List.hd (graphicStack);
