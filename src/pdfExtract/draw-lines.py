@@ -8,4 +8,4 @@ for line in sys.stdin:
         points = [float(i) for i in points]
         print(points)
         plt.plot((points[0], points[2]), (points[1], points[3]))
-plt.savefig('out.png')
+plt.savefig(sys.argv[1])

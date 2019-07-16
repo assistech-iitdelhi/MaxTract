@@ -185,7 +185,7 @@ let rec makeLineAux pointsList left right top bottom =
 let makeLine pointsList=
   match pointsList with
       x1::y1::x2::y2::t -> let cm = !ctMatrix in  
-                        List.iter(printf "%f ") pointsList; 
+                        (* List.iter(printf "%f ") pointsList;  *)
                         Ln {    stx = cm.a*.x1 +. cm.c*.y1 +. cm.e;
                                 sty = cm.b*.x1 +. cm.d*.y1 +. cm.f;
                                 enx = cm.a*.x2 +. cm.c*.y2 +. cm.e;
@@ -521,7 +521,6 @@ contents := Str.string_after (!contents) ((Str.match_end ()));
 ;;
 
 let rec streamReader fonts output graphicStack linePoints=
-        printElems output;
   (*Empty stream*)
   if String.length (!contents) = 0 
   then (output)
@@ -613,7 +612,7 @@ let rec streamReader fonts output graphicStack linePoints=
 (*Line painting operators*)
   else if (Str.string_match (Str.regexp "S\\|B\\|b") (!contents) 0)
   then (
-    List.iter(printf "%f ") linePoints; 
+    (* List.iter(printf "%f ") linePoints; *) 
     contents := Str.string_after (!contents) (Str.match_end ());
     if (List.length linePoints) > 3 then
       streamReader fonts ((makeLine (List.rev linePoints))::output) graphicStack linePoints
