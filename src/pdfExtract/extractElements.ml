@@ -130,7 +130,6 @@ let extractFile inFile inDirectory=
 	  let pageList = Pdfextractor.extractPDF inCh pageTree [] in
 	    close_in inCh;
 	    let elements = Contentparser.parse pageList [] !print !plines in
-
 	      (* run pdf2tiff followed by ccl to get json from pdf's image *)
 	      if (!jsondir) = "" && not !plines then(	    
 		system ("./pdf2tiff "^(!file));

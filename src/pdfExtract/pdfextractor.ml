@@ -1,4 +1,5 @@
 open Str;;
+open Printf
 
 
 let verbose = ref false
@@ -68,7 +69,7 @@ let findObj obj chan =
 let getObj obj chan =
    
   findObj obj chan;
- if (!verbose) then print_string ("Getting  "^obj^"\n");
+ if (!verbose) then print_string ("getObj  "^obj^"\n");
   let objStr = ref "" in
 
   let objCount = ref 0 in
@@ -160,7 +161,7 @@ let getDic obj =
  *)
 let getKeyValue obj key chan =
 
-  if (!verbose) then print_string ("Getting  "^key^"\n");
+  if (!verbose) then print_string ("getKeyValue  "^key^"\n");
   try(  
     Str.search_forward (regexp key) obj 0 ;
     let obj = trim (Str.string_after obj (Str.match_end ())) in
@@ -185,7 +186,7 @@ let getKeyValue obj key chan =
     @output:  The remainder of the object as a string.
  *)
 let getObjRemainder obj key chan = 
-  if (!verbose) then print_string ("Getting  "^key^"\n");
+  if (!verbose) then print_string ("getObjRemainder  "^key^"\n");
   try
     ignore(Str.search_forward (regexp key) obj 0);
     let endObj = regexp "\\(>> \\)*endobj" in
@@ -201,7 +202,10 @@ let getObjRemainder obj key chan =
       Not_found -> "Not_found";;
 
 let getObjRemainder2 obj key = 
+  try
   Str.string_after obj (Str.search_forward (regexp key) obj 0)
+  with
+      Not_found -> "Not_found";;
 
 
 
@@ -419,10 +423,10 @@ let rec getFonts chan fontList fonts =
     			if dups <> [] then 
 			  diffs := (makeDupEncoding dups [])
 			else
-			  diffs := Ascii.ascii
+			  diffs := Ascii.ascii;
 		    else diffs := (fixEncoding (makeListOfArray differences) []);
-		    let charList = makeEncoding (!diffs)  (fixWidths (int_of_string firstChar) (makeListOfArray widths) []) [] in
-		      getFonts chan tail ({fname=name;chars=charList;ffamily=baseFont}::fonts))
+		      let charList = makeEncoding (!diffs)  (fixWidths (int_of_string firstChar) (makeListOfArray widths) []) [] in
+		      getFonts chan tail ({fname=name;chars=charList;ffamily=baseFont}::fonts) )
     | h::t -> getFonts chan t fonts
     | _ -> fonts
 ;;
@@ -461,7 +465,7 @@ let rec extractPDF chan pageTree pageList =
 
 			extractPDF chan  t ({dimensions=mBox;fonts=fontList; contents=(contentStream)}::pageList)
 		    ))
-	with error -> (extractPDF chan  t ({dimensions={mx=(-1.); my=(-1.);mwidth=(-1.); mheight=(-1.)}; fonts=[]; contents=""}::pageList))
+	with error ->  (extractPDF chan  t ({dimensions={mx=(-1.); my=(-1.);mwidth=(-1.); mheight=(-1.)}; fonts=[]; contents=""}::pageList))
       )
     | _ -> (pageList)
 ;;
