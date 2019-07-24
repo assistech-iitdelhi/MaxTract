@@ -121,7 +121,7 @@ char *get_basename(char *path)
     return base ? base+1 : path;
 }
 
-main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
   //START;
   
