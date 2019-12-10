@@ -9,10 +9,7 @@
 
 open Json_type
 
-
-
 (** 
-
     Module to encapsulate loading from and saving to a .jsonf file. Jsonf files
     contains the low level character and line information extracted from a clip
     of a PDF file and with the true bounding boxes of the characters, lines etc

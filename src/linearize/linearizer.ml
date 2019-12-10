@@ -42,8 +42,6 @@ let linearizeFile file =
 
 let rec linearizeDir dir count =
 
-  try (
-
   let file = dir^(fileInt count) in
 (*print_newline ();
 print_string file;*)
@@ -51,15 +49,10 @@ linearizeFile file;
 lines := (!lines +1);
 linearizeDir dir (count+1);
  
-  )
-   with
-       error  -> () 
 ;;
 
 let rec linearizeDirs dir count =
 
-  try (
-    
     let file = dir^"/"^(dirInt count) in
       (*  print_string file;*)
       if (Sys.file_exists file) then(
@@ -69,9 +62,6 @@ pages := (!pages +1);
       )
       else ()
 	
-  )
-  with
-      error  -> () 
 ;;
 
 
@@ -91,8 +81,8 @@ let linearizer () =
     speclist
     (* (fun x -> raise (Arg.Bad ("Bad argument : " ^ x))) *)
     (fun f -> rest := true; 
-       try linearizeFile f with
-error ->())
+       linearizeFile f 
+)
     usage;
   
   match !indir,!infile with
