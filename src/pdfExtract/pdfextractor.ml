@@ -368,6 +368,20 @@ let rec makeEncoding  differences widths chars =
 
 ;;
 
+let first_two l = match l with 
+  a :: b :: _ -> [a; b]
+  | _ -> []
+
+(** Get dup values from a string.
+    @edited:  11-DEC-2019 
+    @author:  Himanshu Garg 
+    @input:   A string.
+    @effects: None.
+    @output:  A pair list of strings associating a number to a character name.
+ *)
+let getDup str = 
+  let fn s = first_two (Str.split (Str.regexp "[ \t]+") s) in
+  List.flatten (List.map fn (List.tl (Str.split (Str.regexp "dup") str)))
 
 (** Get dup values from a string.
     @edited:  26-JUN-2012
@@ -376,11 +390,6 @@ let rec makeEncoding  differences widths chars =
     @effects: None.
     @output:  A pair list of strings associating a number to a character name.
  *)
-let getDup str = 
-  let first_two l = match l with a :: b :: _ -> [a; b] in
-  let fn s = first_two (Str.split (Str.regexp "[ \t]+") s) in
-  List.flatten (List.map fn (Str.split (Str.regexp "dup") str))
-
 (**
    match (SPLIT "dup") str with
       | [] -> []
