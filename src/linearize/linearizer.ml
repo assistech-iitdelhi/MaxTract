@@ -41,27 +41,19 @@ let linearizeFile file =
 ;;
 
 let rec linearizeDir dir count =
-
   let file = dir^(fileInt count) in
-(*print_newline ();
-print_string file;*)
-linearizeFile file;
-lines := (!lines +1);
-linearizeDir dir (count+1);
- 
+    linearizeFile file;
+    lines := (!lines +1);
+    linearizeDir dir (count+1);
 ;;
 
 let rec linearizeDirs dir count =
-
     let file = dir^"/"^(dirInt count) in
-      (*  print_string file;*)
-      if (Sys.file_exists file) then(
-	linearizeDir file 0;
-pages := (!pages +1);
-	linearizeDirs dir (count+1)
-      )
-      else ()
-	
+    if (Sys.file_exists file) then(
+	    linearizeDir file 0;
+      pages := (!pages +1);
+	    linearizeDirs dir (count+1)
+    ) else ()
 ;;
 
 
