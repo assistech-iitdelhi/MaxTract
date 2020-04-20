@@ -182,6 +182,10 @@ module JsonfIO = struct
   let loadClip file = 
     let jsonClip = Json_io.load_json file in
       j2oClip jsonClip
+
+  let loadClipFromStdin =
+    let jsonClip = Json_io.json_of_string (really_input_string stdin (in_channel_length stdin)) in
+      j2oClip jsonClip
         
   (** 
       Ocaml to Jsonf translation of a pdfChar
@@ -280,5 +284,8 @@ module JsonfIO = struct
   
   let getSymbols file = 
     (loadClip file).symbols
+
+  let getSymbolsFromStdin =
+    (loadClipFromStdin).symbols
 
 end

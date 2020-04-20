@@ -137,7 +137,7 @@ space:= $(empty) $(empty)
 
 OCAMLFINDFLAGS=-package $(subst $(space),$(comma),$(PACKAGES))
 
-OCAMLFLAGS=$(OCAMLFINDFLAGS) $(INCLUDES) # -custom unix.cma str.cma # $(PREPROCESS)    # add other options for ocamlc here
+OCAMLFLAGS=$(OCAMLFINDFLAGS) $(INCLUDES) -g # -custom unix.cma str.cma # $(PREPROCESS)    # add other options for ocamlc here
 OCAMLOPTFLAGS=$(OCAMLFINDFLAGS) $(INCLUDES) # -ccopt -static #unix.cmxa str.cmxa # $(PREPROCESS) # add other options for ocamlopt here
 
 ## Docu Flags for our special generators

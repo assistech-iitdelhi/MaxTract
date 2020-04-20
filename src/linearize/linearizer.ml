@@ -17,6 +17,18 @@ let rec fileInt count = Printf.sprintf "%03d.jsonf" count
 
 let rec dirInt count =  Printf.sprintf "%03d/" count
 
+let linearizeStdin =
+
+    let symbols = JsonfIO.getSymbolsFromStdin in
+    let synts =  Preprocessor.preprocess symbols  in
+    let outStr = ((Linearize.lineariseLineWOBbox synts)^"\n") in
+
+  print_string "linearizeStdin";
+	print_newline ();
+	print_string outStr;
+	print_newline ();
+;;
+
 let linearizeFile file =
 
     let symbols = JsonfIO.getSymbols file in
@@ -79,17 +91,15 @@ let linearizer () =
   
   match !indir,!infile with
     | "","" when !rest -> exit 0
-    | "",""            -> print_string "Either input directory or input file must be specified\n"; exit(0)
+    | "",""            -> linearizeStdin
     | "",file          -> linearizeFile file
     | dir,""           -> (linearizeDirs !indir 0;
-(*Testing to see if anything has been prodeuced, and if more than 3 lines per page are being extracted*)
+(*Testing to see if anything has been produced, and if more than 3 lines per page are being extracted*)
 			   if (!lines>0)&& (!pages>0)&&((!lines) / (!pages) >3) then ( 
 			     let logFile = ((!indir)^"/lin.log") in
 			     let outCh = open_out logFile in
 			       output_string outCh (("Lines: "^(string_of_int (!lines)))^("\nPages: "^(string_of_int (!pages))));
 			       close_out outCh;))
 	
-    | _,_              -> print_string "Specify either an input directory or an
-  input file only\n"; exit(0)
 let _ = linearizer ()
 ;;  

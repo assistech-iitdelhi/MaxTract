@@ -762,6 +762,21 @@ let rec linearise t synts tstring linearised=
 	)
 ;;
 
+let lineariseLineWOBbox synts=
+  match synts with
+      h::t -> (
+	let x = string_of_int (getLeft Null synts h.x1) in
+	let y = string_of_int (getTop Null synts h.y1) in
+	let w = string_of_int ((getRight Null synts h.x3) -  (getLeft Null synts h.x1)) in
+	let h = string_of_int ((getBot Null synts h.y3) -(getTop Null synts h.y1)) in
+	  
+	  bbstring := "";
+	  let line =  linearise Null (sortSynt synts) "" (x^" "^y^" "^w^" "^h^" ") in
+	    line)
+    |  _ ->  ""
+
+;;
+
 let lineariseLine synts bbChan=
   match synts with
       h::t -> (
