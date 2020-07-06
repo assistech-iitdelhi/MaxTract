@@ -31,8 +31,8 @@ let rec getBoundedAbove t synts above =
   match t,synts with
     | Null,_ -> []
     | ITree iTree,hd::tl when ((hd.y3 <= iTree.ttop) 
-			       && (hd.x1 >= iTree.tleft) 
-			       && (hd.x3 <= iTree.tright)) -> getBoundedAbove t tl (hd::above)
+			       && (hd.x1 >= iTree.tleft - int_of_float (float_of_int (iTree.tright-iTree.tleft)*.0.1)) 
+			       && (hd.x3 <= iTree.tright + int_of_float (float_of_int (iTree.tright-iTree.tleft)*.0.1))) -> getBoundedAbove t tl (hd::above)
     | _,hd::tl -> getBoundedAbove t tl above    
     | _,[]   -> above
 
@@ -47,8 +47,8 @@ let rec getBoundedBelow t synts below =
   match t,synts with
     | Null,_ -> []
     | ITree iTree,hd::tl when ((hd.y1 >= iTree.tbot) 
-			       && (hd.x1 >= iTree.tleft) 
-			       && (hd.x3 <= iTree.tright)) -> getBoundedBelow t tl (hd::below)
+			       && (hd.x1 >= iTree.tleft-int_of_float (float_of_int (iTree.tright-iTree.tleft)*.0.1)) 
+			       && (hd.x3 <= iTree.tright+int_of_float (float_of_int (iTree.tright-iTree.tleft)*.0.1))) -> getBoundedBelow t tl (hd::below)
     | _,hd::tl -> getBoundedBelow t tl below    
     | _,[]   -> below
 
@@ -82,7 +82,7 @@ let rec getSub t synts sub =
     | ITree iTree,hd::tl when hd.y2 = iTree.tbase -> sub
    | ITree iTree,hd::tl when ((hd.y1 > iTree.ttop) 
 			       && (((hd.y2 > iTree.tbase)&& (hd.y3 >= iTree.tbot))||(hd.y1 > ((iTree.ttop+iTree.tbot))/2))
-			       && (hd.x1 < ((getRight t sub iTree.tright) + 20) ))
+			       && (hd.x1 < ((getRight t sub iTree.tright) + hd.x3 - hd.x1) ))
 	-> getSub t tl (hd::sub)
     | _,hd::tl -> sub   
     | _,[]   -> sub

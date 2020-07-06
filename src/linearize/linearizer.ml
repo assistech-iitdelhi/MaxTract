@@ -40,28 +40,11 @@ let linearizeFile file =
     
 ;;
 
-let rec linearizeDir dir count =
-  let file = dir^(fileInt count) in
-    linearizeFile file;
-    lines := (!lines +1);
-    linearizeDir dir (count+1);
-;;
-
-let rec linearizeDirs dir count =
-    let file = dir^"/"^(dirInt count) in
-    if (Sys.file_exists file) then(
-	    linearizeDir file 0;
-      pages := (!pages +1);
-	    linearizeDirs dir (count+1)
-    ) else ()
-;;
-
 
 let usage = "usage: " ^ Sys.argv.(0) ^ " [-d string] [-e string] [-f string]
 [-b] [-s]"
   
 let speclist = [
-  ("-d", Arg.Set_string indir,     ": Name of the input directory.");
     ("-f", Arg.Set_string infile,    ": Name of the input file (obsolete)!");
     ("-e", Arg.Set_string extension, ": Output file extension. Default is "^(!extension)^".");
     ("-b", Arg.Clear bbox,           ": Sets BBox file off");
@@ -77,19 +60,10 @@ let linearizer () =
 )
     usage;
   
-  match !indir,!infile with
-    | "","" when !rest -> exit 0
-    | "",""            -> print_string "Either input directory or input file must be specified\n"; exit(0)
-    | "",file          -> linearizeFile file
-    | dir,""           -> (linearizeDirs !indir 0;
-(*Testing to see if anything has been prodeuced, and if more than 3 lines per page are being extracted*)
-			   if (!lines>0)&& (!pages>0)&&((!lines) / (!pages) >3) then ( 
-			     let logFile = ((!indir)^"/lin.log") in
-			     let outCh = open_out logFile in
-			       output_string outCh (("Lines: "^(string_of_int (!lines)))^("\nPages: "^(string_of_int (!pages))));
-			       close_out outCh;))
-	
-    | _,_              -> print_string "Specify either an input directory or an
-  input file only\n"; exit(0)
+  match !infile with
+    | "" when !rest -> exit 0
+    | ""        -> print_string "input file must be specified\n"; exit(0)
+    | file      -> linearizeFile file
+    | _         -> print_string "Specify an input file only\n"; exit(0)
 let _ = linearizer ()
 ;;  

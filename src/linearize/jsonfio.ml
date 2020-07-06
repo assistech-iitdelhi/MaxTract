@@ -61,7 +61,7 @@ module JsonfIO = struct
       thereof in the symbol *) 
   type symbol = {
     bbox:      bBox;         (* The bounding of the entire symbol *) 
-    glyphs:    bBox list;    (* The list of bounding boxes of all glyphs in this symbol  *)
+    (* glyphs:    bBox list;  *)  (* The list of bounding boxes of all glyphs in this symbol  *)
     elements:  element list; (* The list of elements in this symbol  *)
   }
       
@@ -150,7 +150,7 @@ module JsonfIO = struct
     let tbl = Browse.make_table (Browse.objekt v) in
       {
         bbox     = j2oBBox (Browse.field tbl "bbox") ;
-        glyphs   = Browse.list j2oBBox (Browse.field tbl "glyphs") ;
+        (** glyphs   = Browse.list j2oBBox (Browse.field tbl "glyphs") ; *)
         elements = Browse.list j2oElement (Browse.field tbl "elements") ;
       }
         
@@ -241,7 +241,7 @@ module JsonfIO = struct
   let o2jSymbol o =
     Object [
       "bbox", o2jBBox o.bbox ;
-      "glyphs", Build.list o2jBBox o.glyphs;
+      (* "glyphs", Build.list o2jBBox o.glyphs; *)
       "elements", Build.list o2jElement o.elements;
     ]
       
