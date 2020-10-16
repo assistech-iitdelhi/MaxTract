@@ -81,7 +81,7 @@ let rec getSub t synts sub =
     | Null,_ -> []
     | ITree iTree,hd::tl when hd.y2 = iTree.tbase -> sub
    | ITree iTree,hd::tl when ((hd.y1 > iTree.ttop) 
-			       && (((hd.y2 > iTree.tbase)&& (hd.y3 >= iTree.tbot))||(hd.y1 > ((iTree.ttop+iTree.tbot))/2))
+			       && (((hd.y2 > iTree.tbase)&& (hd.y3 > iTree.tbot+1))||(hd.y1 > ((iTree.ttop+iTree.tbot))/2))
 			       && (hd.x1 < ((getRight t sub iTree.tright) + hd.x3 - hd.x1) ))
 	-> getSub t tl (hd::sub)
     | _,hd::tl -> sub   
@@ -99,7 +99,7 @@ let rec getSuper t synts super =
     | Null,_ -> []
     | ITree iTree,hd::tl when hd.y2 = iTree.tbase -> super
     | ITree iTree,hd::tl when ((hd.y3 < iTree.tbot)
-			       &&   (((hd.y2 < iTree.tbase)&& (hd.y1 <= iTree.ttop))||(hd.y2 < ((iTree.ttop+iTree.tbot))/2))
+			       &&   (((hd.y2 < iTree.tbase)&& (hd.y1 < iTree.ttop+1))) (* ||(hd.y2 < ((iTree.ttop+iTree.tbot))/2)) *)
 			       && (hd.x1 < ((getRight t super iTree.tright) + 20) ))
 	-> getSuper t tl (hd::super)
     | _,hd::tl -> super   
