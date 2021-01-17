@@ -10,3 +10,5 @@
 **/linearizer
 **/extractElements
 samples/json
+*.o
+*.cmx
