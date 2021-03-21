@@ -371,6 +371,20 @@ let rec makeEncoding  differences widths chars =
 ;;
     
 
+let first_two l = match l with 
+  a :: b :: _ -> [a; b]
+  | _ -> []
+
+(** Get dup values from a string.
+    @edited:  11-DEC-2019 
+    @author:  Himanshu Garg 
+    @input:   A string.
+    @effects: None.
+    @output:  A pair list of strings associating a number to a character name.
+ *)
+let getDup str = 
+  let fn s = first_two (Str.split (Str.regexp "[ \t]+") s) in
+  List.flatten (List.map fn (List.tl (Str.split (Str.regexp "dup") str)))
 
 (** Get dup values from a string.
     @edited:  26-JUN-2012
@@ -379,11 +393,11 @@ let rec makeEncoding  differences widths chars =
     @effects: None.
     @output:  A pair list of strings associating a number to a character name.
  *)
-let getDup str = 
-    match (SPLIT "dup") str with
+(**
+   match (SPLIT "dup") str with
       | [] -> []
       | _::dups -> List.flatten (List.map (function | RE blank* (digit+ as num) blank* ("/"alpha* as name) _* -> [num;name]) dups);;
-
+**)
 
 
 (** 
@@ -428,9 +442,7 @@ let rec getFonts chan fontList fonts =
 			  diffs := Ascii.ascii
 		    else diffs := (fixEncoding (makeListOfArray differences) []);
 		    let charList = makeEncoding (!diffs)  (fixWidths (int_of_string firstChar) (makeListOfArray widths) []) [] in
-		      (*print_string name; print_newline ();		     
-			pf charList;*)
-		      getFonts chan tail ({fname=name;chars=charList;ffamily=baseFont}::fonts))
+		      getFonts chan tail ({fname=name;chars=charList;ffamily=baseFont}::fonts) )
     | h::t -> getFonts chan t fonts
     | _ -> fonts
 ;;

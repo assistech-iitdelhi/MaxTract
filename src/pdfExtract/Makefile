@@ -55,7 +55,7 @@ TARGETS= extractElements.ml\
 
 # All Packages needed for making sources and targets
 
-PACKAGES=json-wheel mikmatch_pcre\
+PACKAGES=json-wheel \
 
 # A flag specifying if documentation is in short or long format
 SHORTDOC=false
@@ -137,7 +137,7 @@ DOCINCLUDES=$(addprefix -I , $(DOCINCLUDEDIRS))
 
 ## Flags
 # PREPROCESS=-pp 'camlp4o -I . $(addsuffix .cmo,$(basename $(EXTENSIONS)))' # Preprocessing not used
-PREPROCESS=-syntax camlp4o
+PREPROCESS=# -syntax camlp4o
 
 comma:= ,
 empty:=
